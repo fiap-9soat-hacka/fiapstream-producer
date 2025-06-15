@@ -1,8 +1,23 @@
 package orq.fiap.services;
 
+import java.io.IOException;
+import java.util.UUID;
+
+import org.apache.tika.Tika;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import orq.fiap.dto.FormData;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.WebApplicationException;
+import orq.fiap.dto.VideoData;
+import orq.fiap.dto.VideoDataUUID;
 import orq.fiap.rest.out.CommonResource;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -17,21 +32,38 @@ public class S3Service {
     @Inject
     CommonResource commonResource;
 
-    public void uploadFile(FormData formData) {
+    @Channel("processador-requests")
+    Emitter<String> emitter;
 
-        // if (formData.filename == null || formData.filename.isEmpty()) {
-        // return Response.status(Status.BAD_REQUEST).build();
-        // }
+    public void uploadFile(VideoData videoData) throws IOException, MimeTypeException {
 
-        // if (formData.mimetype == null || formData.mimetype.isEmpty()) {
-        // return Response.status(Status.BAD_REQUEST).build();
-        // }
+        if (videoData.filename == null || videoData.filename.isEmpty()) {
+            throw new BadRequestException("Filename is required");
+        }
 
-        PutObjectResponse putResponse = s3Client.putObject(commonResource.buildPutRequest(formData),
-                RequestBody.fromFile(formData.video));
+        if (videoData.video == null || !videoData.video.exists()) {
+            throw new BadRequestException("Video file is required and must exist");
+        }
+
+        Tika tika = new Tika();
+        String mimeType = tika.detect(videoData.video);
+
+        if (!mimeType.startsWith("video/")) {
+            throw new BadRequestException("Invalid video file type: " + mimeType);
+        }
+
+        String uuid = videoData.filename + "-" + UUID.randomUUID().toString();
+        VideoDataUUID videoDataUUID = new VideoDataUUID(videoData, mimeType, uuid);
+
+        PutObjectResponse putResponse = s3Client.putObject(commonResource.buildPutRequest(videoDataUUID),
+                RequestBody.fromFile(videoDataUUID.video));
 
         if (putResponse == null) {
-            throw new RuntimeException("Failed to upload file to S3");
+            throw new WebApplicationException("Failed to upload file to S3");
         }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String videoDataUUIDJson = objectMapper.writeValueAsString(videoDataUUID);
+        emitter.send(videoDataUUIDJson);
     }
 }

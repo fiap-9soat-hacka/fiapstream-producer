@@ -2,7 +2,6 @@ package orq.fiap.rest.in;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 import org.jboss.resteasy.reactive.PartType;
@@ -16,7 +15,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import orq.fiap.dto.FormData;
+import orq.fiap.dto.VideoData;
 import orq.fiap.services.S3Service;
 
 @Path("/video")
@@ -36,8 +35,8 @@ public class VideoResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response uploadVideos(FormData form) throws IOException, SAXException, Exception {
-        this.s3Service.uploadFile(form);
+    public Response uploadVideos(VideoData videoData) throws IOException, SAXException, Exception {
+        this.s3Service.uploadFile(videoData);
 
         return Response
                 .ok()

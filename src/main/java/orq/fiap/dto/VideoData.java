@@ -5,7 +5,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;
 
-public class FormData {
+public class VideoData {
 
     @RestForm("video")
     public File video;
@@ -13,9 +13,4 @@ public class FormData {
     @RestForm
     @PartType(MediaType.TEXT_PLAIN)
     public String filename;
-
-    @RestForm
-    @PartType(MediaType.TEXT_PLAIN)
-    public String mimetype;
-
 }
