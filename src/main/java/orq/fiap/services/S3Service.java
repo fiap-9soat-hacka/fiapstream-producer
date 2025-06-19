@@ -1,24 +1,29 @@
 package orq.fiap.services;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadFactory;
+import java.util.stream.Collectors;
 
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import org.jboss.resteasy.reactive.multipart.FileUpload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
+import orq.fiap.rest.in.VideoResource.VideoUploadForm;
 import orq.fiap.rest.out.CommonResource;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -35,6 +40,22 @@ public class S3Service {
 
     @Channel("processador-requests")
     Emitter<String> emitter;
+
+    public void uploadListOfFiles(VideoUploadForm videoFiles) throws IOException, MimeTypeException {
+        List<VideoData> videoDataList = convertToVideoDataList(videoFiles);
+
+        ThreadFactory threadFactory = Thread.ofVirtual().factory();
+        videoDataList.stream()
+                .map(videoData -> threadFactory.newThread(() -> {
+                    try {
+                        uploadFile(videoData);
+                    } catch (Exception e) {
+                        Log.error("Failed to upload file: " + videoData.filename, e);
+                        throw new WebApplicationException("Failed to upload file: " + videoData.filename, e);
+                    }
+                }))
+                .forEach(Thread::start);
+    }
 
     public void uploadFile(VideoData videoData) throws IOException, MimeTypeException {
 
@@ -57,8 +78,9 @@ public class S3Service {
         VideoDataUUID videoDataUUID = new VideoDataUUID(videoData, mimeType, uuid);
 
         PutObjectResponse putResponse = s3Client.putObject(commonResource.buildPutRequest(videoDataUUID),
-                RequestBody.fromFile(videoDataUUID.video));
+                RequestBody.fromFile(videoData.video));
 
+        Log.info("====================2");
         if (putResponse == null) {
             throw new WebApplicationException("Failed to upload file to S3");
         }
@@ -66,5 +88,16 @@ public class S3Service {
         ObjectMapper objectMapper = new ObjectMapper();
         String videoDataUUIDJson = objectMapper.writeValueAsString(videoDataUUID);
         emitter.send(videoDataUUIDJson);
+    }
+
+    private List<VideoData> convertToVideoDataList(VideoUploadForm files) {
+        return files.files.stream()
+                .map(file -> {
+                    VideoData videoData = new VideoData();
+                    videoData.setVideo(file);
+                    videoData.setFilename(file.getName());
+                    return videoData;
+                })
+                .collect(Collectors.toList());
     }
 }
