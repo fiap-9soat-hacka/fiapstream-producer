@@ -1,5 +1,10 @@
 package orq.fiap.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class VideoDataUUID extends VideoData {
 
     public String mimeType;

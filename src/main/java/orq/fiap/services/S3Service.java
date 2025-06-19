@@ -23,7 +23,6 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
-import orq.fiap.rest.in.VideoResource.VideoUploadForm;
 import orq.fiap.rest.out.CommonResource;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -40,22 +39,6 @@ public class S3Service {
 
     @Channel("processador-requests")
     Emitter<String> emitter;
-
-    public void uploadListOfFiles(VideoUploadForm videoFiles) throws IOException, MimeTypeException {
-        List<VideoData> videoDataList = convertToVideoDataList(videoFiles);
-
-        ThreadFactory threadFactory = Thread.ofVirtual().factory();
-        videoDataList.stream()
-                .map(videoData -> threadFactory.newThread(() -> {
-                    try {
-                        uploadFile(videoData);
-                    } catch (Exception e) {
-                        Log.error("Failed to upload file: " + videoData.filename, e);
-                        throw new WebApplicationException("Failed to upload file: " + videoData.filename, e);
-                    }
-                }))
-                .forEach(Thread::start);
-    }
 
     public void uploadFile(VideoData videoData) throws IOException, MimeTypeException {
 
@@ -90,8 +73,8 @@ public class S3Service {
         emitter.send(videoDataUUIDJson);
     }
 
-    private List<VideoData> convertToVideoDataList(VideoUploadForm files) {
-        return files.files.stream()
+    private List<VideoData> convertToVideoDataList(List<File> files) {
+        return files.stream()
                 .map(file -> {
                     VideoData videoData = new VideoData();
                     videoData.setVideo(file);

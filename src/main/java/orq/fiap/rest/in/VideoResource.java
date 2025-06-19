@@ -19,12 +19,18 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import orq.fiap.dto.VideoData;
+import orq.fiap.dto.VideoDataUUID;
+import orq.fiap.rest.out.CommonResource;
 import orq.fiap.services.S3Service;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Path("/video")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -34,35 +40,17 @@ public class VideoResource {
     @Inject
     S3Service s3Service;
 
-    public static class VideoUploadForm {
-        @RestForm("files")
-        public List<File> files;
-    }
+    @Inject
+    S3Client s3Client;
+
+    @Inject
+    CommonResource commonResource;
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response uploadVideos(VideoData videoData) throws IOException, SAXException, Exception {
         this.s3Service.uploadFile(videoData);
-
-        return Response
-                .ok()
-                .build();
-    }
-
-    @POST
-    @Path("/list")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response uploadVideos(@RestForm List<FileUpload> files)
-            throws IOException, SAXException, Exception {
-        files.forEach(file -> {
-            // Process each file upload
-            System.out.println("Received file: " + file.uploadedFile());
-            // You could move the file using file.uploadedFileName(), which is the path on
-            // disk.
-        });
-        // this.s3Service.uploadListOfFiles(files);
 
         return Response
                 .ok()
