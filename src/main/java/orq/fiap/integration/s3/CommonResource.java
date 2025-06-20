@@ -1,4 +1,4 @@
-package orq.fiap.rest.out;
+package orq.fiap.integration.s3;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

@@ -21,9 +21,11 @@ import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
+import orq.fiap.dao.VideoDao;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
-import orq.fiap.rest.out.CommonResource;
+import orq.fiap.integration.s3.CommonResource;
+import orq.fiap.model.ClientesEntity;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -36,6 +38,9 @@ public class S3Service {
 
     @Inject
     CommonResource commonResource;
+
+    @Inject
+    VideoDao videoDao;
 
     @Channel("processador-requests")
     Emitter<String> emitter;
@@ -63,24 +68,15 @@ public class S3Service {
         PutObjectResponse putResponse = s3Client.putObject(commonResource.buildPutRequest(videoDataUUID),
                 RequestBody.fromFile(videoData.video));
 
-        Log.info("====================2");
         if (putResponse == null) {
             throw new WebApplicationException("Failed to upload file to S3");
         }
 
+        // TODO arrumar isso aqui
+        videoDao.armazenarVideo(videoDataUUID, 1, "teste");
+
         ObjectMapper objectMapper = new ObjectMapper();
         String videoDataUUIDJson = objectMapper.writeValueAsString(videoDataUUID);
         emitter.send(videoDataUUIDJson);
-    }
-
-    private List<VideoData> convertToVideoDataList(List<File> files) {
-        return files.stream()
-                .map(file -> {
-                    VideoData videoData = new VideoData();
-                    videoData.setVideo(file);
-                    videoData.setFilename(file.getName());
-                    return videoData;
-                })
-                .collect(Collectors.toList());
     }
 }
