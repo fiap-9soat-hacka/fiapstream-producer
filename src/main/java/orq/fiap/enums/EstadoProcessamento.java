@@ -1,5 +1,8 @@
 package orq.fiap.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum EstadoProcessamento {
     PENDENTE("Pendente"),
     PROCESSANDO("Processando"),
@@ -12,7 +15,4 @@ public enum EstadoProcessamento {
         this.descricao = descricao;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
 }

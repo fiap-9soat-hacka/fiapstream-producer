@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class VideoDataUUID extends VideoData {
 
-    public String mimeType;
-    public String uuid;
+    private String mimeType;
+    private String uuid;
 
     public VideoDataUUID() {
     }
