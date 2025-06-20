@@ -20,4 +20,8 @@ public class VideoData {
     @RestForm
     @PartType(MediaType.TEXT_PLAIN)
     public String filename;
+
+    @RestForm
+    @PartType(MediaType.TEXT_PLAIN)
+    public String webhookUrl;
 }

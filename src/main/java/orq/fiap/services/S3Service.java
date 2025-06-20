@@ -73,7 +73,7 @@ public class S3Service {
         }
 
         // TODO arrumar isso aqui
-        videoDao.armazenarVideo(videoDataUUID, 1, "teste");
+        videoDao.armazenarVideo(videoDataUUID, 1);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String videoDataUUIDJson = objectMapper.writeValueAsString(videoDataUUID);

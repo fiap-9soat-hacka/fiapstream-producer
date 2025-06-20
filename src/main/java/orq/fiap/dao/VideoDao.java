@@ -14,8 +14,10 @@ import orq.fiap.model.VideosEntity;
 public class VideoDao implements PanacheRepositoryBase<VideosEntity, Integer> {
 
     @Transactional(rollbackOn = Exception.class)
-    public void updateVideoState(Integer id, EstadoProcessamento estado) {
-        VideosEntity video = findById(id);
+    public void updateVideoState(Integer videoUuid, EstadoProcessamento estado) {
+        VideosEntity video = find("""
+                WHERE idVideoS3 = :videoUuid
+                """).singleResult();
         if (video != null) {
             video.setEstadoProcessamento(estado);
             persist(video);
@@ -23,13 +25,13 @@ public class VideoDao implements PanacheRepositoryBase<VideosEntity, Integer> {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public void armazenarVideo(VideoDataUUID video, Integer codigoCliente, String webhookUrl) {
+    public void armazenarVideo(VideoDataUUID video, Integer codigoCliente) {
         VideosEntity videoEntity = new VideosEntity();
         videoEntity.setIdVideoS3(video.uuid);
         videoEntity.setCodigoCliente(codigoCliente);
         videoEntity.setNomeArquivo(video.filename);
         videoEntity.setEstadoProcessamento(EstadoProcessamento.PENDENTE);
-        videoEntity.setWebhookUrl(webhookUrl);
+        videoEntity.setWebhookUrl(video.webhookUrl);
         videoEntity.setTsAlteracao(LocalDateTime.now());
 
         persist(videoEntity);
