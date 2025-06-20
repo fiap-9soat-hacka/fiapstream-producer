@@ -16,6 +16,7 @@ public class VideoDataUUID extends VideoData {
     public VideoDataUUID(VideoData videoData, String mimeType, String uuid) {
         this.video = videoData.video;
         this.filename = videoData.filename;
+        this.webhookUrl = videoData.webhookUrl;
         this.mimeType = mimeType;
         this.uuid = uuid;
     }
