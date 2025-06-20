@@ -23,9 +23,6 @@ public class VideoResource {
     @Inject
     ProcessamentoService processamentoService;
 
-    @Inject
-    S3Client s3Client;
-
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)

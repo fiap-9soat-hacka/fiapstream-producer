@@ -7,7 +7,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import orq.fiap.dto.VideoDataUUID;
 import orq.fiap.enums.EstadoProcessamento;
-import orq.fiap.model.ClientesEntity;
 import orq.fiap.model.VideosEntity;
 
 @ApplicationScoped
@@ -27,9 +26,9 @@ public class VideoDao implements PanacheRepositoryBase<VideosEntity, Integer> {
     @Transactional(rollbackOn = Exception.class)
     public void armazenarVideo(VideoDataUUID video, Integer codigoCliente) {
         VideosEntity videoEntity = new VideosEntity();
-        videoEntity.setIdVideoS3(video.uuid);
+        videoEntity.setIdVideoS3(video.getUuid());
         videoEntity.setCodigoCliente(codigoCliente);
-        videoEntity.setNomeArquivo(video.filename);
+//        videoEntity.setNomeArquivo(video.filename);
         videoEntity.setEstadoProcessamento(EstadoProcessamento.PENDENTE);
         videoEntity.setWebhookUrl(video.webhookUrl);
         videoEntity.setTsAlteracao(LocalDateTime.now());

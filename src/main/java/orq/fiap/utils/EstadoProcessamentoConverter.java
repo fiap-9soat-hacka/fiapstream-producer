@@ -5,7 +5,7 @@ import jakarta.persistence.Converter;
 import orq.fiap.enums.EstadoProcessamento;
 
 @Converter(autoApply = true)
-public class EstadoConverter implements AttributeConverter<EstadoProcessamento, Integer> {
+public class EstadoProcessamentoConverter implements AttributeConverter<EstadoProcessamento, Integer> {
     @Override
     public Integer convertToDatabaseColumn(EstadoProcessamento estado) {
         return estado != null ? estado.getCodigoEstado() : null;

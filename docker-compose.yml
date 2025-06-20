@@ -25,17 +25,17 @@ services:
       - rabbitmq:/var/lib/rabbitmq
 
   minio:
-    image: bitnami/minio:2025
-    container_name: minio
+    image: docker.io/bitnami/minio:2024
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: fiap
-      MINIO_ROOT_PASSWORD: fiap
+      MINIO_ROOT_USER: fiapstream
+      MINIO_ROOT_PASSWORD: fiapstream
+      MINIO_DEFAULT_BUCKETS: fiap-bucket
     volumes:
-      - minio:/data
-    command: server /data --console-address ":9001"
+      - "minio:/data"
+
 volumes:
   mysql:
   rabbitmq:

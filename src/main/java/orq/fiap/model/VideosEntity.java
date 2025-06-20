@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import orq.fiap.enums.EstadoProcessamento;
-import orq.fiap.utils.EstadoConverter;
+import orq.fiap.utils.EstadoProcessamentoConverter;
 
 @Entity
 @Data
@@ -33,7 +33,7 @@ public class VideosEntity {
     private String nomeArquivo;
 
     @Column(name = "estado_processamento")
-    @Convert(converter = EstadoConverter.class)
+    @Convert(converter = EstadoProcessamentoConverter.class)
     private EstadoProcessamento estadoProcessamento;
 
     @Column(name = "webhook_url")

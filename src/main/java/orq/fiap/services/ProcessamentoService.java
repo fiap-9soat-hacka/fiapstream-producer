@@ -1,8 +1,11 @@
 package orq.fiap.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vertx.core.json.JsonObject;
 import org.apache.tika.Tika;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -29,34 +32,39 @@ public class ProcessamentoService {
     String bucketName;
 
     @Channel("processador-requests")
-    Emitter<VideoDataUUID> emitter;
+    Emitter<String> emitter;
 
     /**
      * Salva o vídeo no bucket S3 e envia solicitação de processamento
      */
     public void iniciarProcessamento(VideoData videoData) throws IOException {
-        if (videoData.video == null || !videoData.video.exists()) {
+        if (videoData.video == null) {
             throw new BadRequestException("Video file is required and must exist");
         }
 
+        File uploadedFile = videoData.getVideo().uploadedFile().toFile();
+
         Tika tika = new Tika();
-        String mimeType = tika.detect(videoData.video);
+        String mimeType = tika.detect(uploadedFile);
 
         if (!mimeType.startsWith("video/")) {
             throw new BadRequestException("Invalid video file type: " + mimeType);
         }
 
-        String uuid = videoData.video.getName() + "-" + UUID.randomUUID();
+        String uuid = uploadedFile.getName() + "-" + UUID.randomUUID();
         VideoDataUUID videoDataUUID = new VideoDataUUID(videoData, mimeType, uuid);
 
         PutObjectResponse putResponse = s3Client.putObject(buildPutRequest(videoDataUUID),
-                RequestBody.fromFile(videoData.video));
+                RequestBody.fromFile(uploadedFile));
 
         if (putResponse == null) {
             throw new WebApplicationException("Failed to upload file to S3");
         }
 
-        emitter.send(videoDataUUID);
+        ObjectMapper mapper = new ObjectMapper();
+        String encoded = mapper.writeValueAsString(videoDataUUID);
+
+        emitter.send(encoded);
     }
 
     private PutObjectRequest buildPutRequest(VideoDataUUID videoData) {

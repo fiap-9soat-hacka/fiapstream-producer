@@ -8,9 +8,10 @@ import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 
 @Entity
-@Table()
+@Table
 @UserDefinition
 public class Usuario {
     @Id
@@ -20,6 +21,8 @@ public class Usuario {
     public String username;
     @Password
     public String password;
+    @Column(unique = true)
+    public String email;
     @Roles
     public String role;
 }

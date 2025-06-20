@@ -1,13 +1,9 @@
 package orq.fiap.dto;
 
-import java.io.File;
-
-import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.ws.rs.core.MediaType;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.jboss.resteasy.reactive.PartType;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
@@ -17,7 +13,7 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 public class VideoData {
     @RestForm("video")
     @NotEmpty(message = "Video is required.")
-    public File video;
+    public FileUpload video;
 
 //    @RestForm
 //    @PartType(MediaType.TEXT_PLAIN)
