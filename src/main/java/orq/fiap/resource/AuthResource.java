@@ -28,7 +28,7 @@ public class AuthResource {
     @Transactional
     @POST
     public Response signUp(@Valid UserCreateRequest userCreateRequest){
-        authService.createUser(userCreateRequest);
+        authService.signUp(userCreateRequest);
 
         return Response.created(URI.create("/user")).build();
     }
