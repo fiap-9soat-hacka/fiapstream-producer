@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.json.JsonObject;
+import jakarta.transaction.Transactional;
 import org.apache.tika.Tika;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -17,6 +18,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
+import orq.fiap.entity.HistoricoProcessamento;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -28,6 +30,9 @@ public class ProcessamentoService {
     @Inject
     S3Client s3Client;
 
+    @Inject
+    HistoricoProcessamentoService historicoProcessamentoService;
+
     @ConfigProperty(name = "bucket.name")
     String bucketName;
 
@@ -38,7 +43,7 @@ public class ProcessamentoService {
      * Salva o vídeo no bucket S3 e envia solicitação de processamento
      */
     public void iniciarProcessamento(VideoData videoData) throws IOException {
-        if (videoData.video == null) {
+        if (videoData.getVideo() == null) {
             throw new BadRequestException("Video file is required and must exist");
         }
 
@@ -63,6 +68,8 @@ public class ProcessamentoService {
 
         ObjectMapper mapper = new ObjectMapper();
         String encoded = mapper.writeValueAsString(videoDataUUID);
+
+        historicoProcessamentoService.criar(videoDataUUID);
 
         emitter.send(encoded);
     }

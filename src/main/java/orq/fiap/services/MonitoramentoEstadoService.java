@@ -10,6 +10,6 @@ import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
 public class MonitoramentoEstadoService {
-    // TODO: Adicionar @Incoming da fila de respostas aqui
+    // TODO: Adicionar @Incoming da fila de RESPOSTAS aqui
     // TODO: Notificar usuario (webhook? email?) em caso de erro
 }

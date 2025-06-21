@@ -13,14 +13,14 @@ import org.jboss.resteasy.reactive.multipart.FileUpload;
 public class VideoData {
     @RestForm("video")
     @NotEmpty(message = "Video is required.")
-    public FileUpload video;
+    protected FileUpload video;
 
 //    @RestForm
 //    @PartType(MediaType.TEXT_PLAIN)
 //    @NotEmpty(message = "Filename is required")
-//    public String filename;
+//    private String filename;
 
     @RestForm
     @PartType(MediaType.TEXT_PLAIN)
-    public String webhookUrl;
+    protected String webhookUrl;
 }

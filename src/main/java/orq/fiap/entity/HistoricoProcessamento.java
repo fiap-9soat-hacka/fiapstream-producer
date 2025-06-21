@@ -26,7 +26,7 @@ public class HistoricoProcessamento {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timestamp;
-    // Relações
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "userId")
     private Usuario usuario;
