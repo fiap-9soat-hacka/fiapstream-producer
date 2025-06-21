@@ -28,6 +28,9 @@ public class HistoricoProcessamento {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timestamp;
 
+    @Column(nullable = false)
+    private String filename;
+
     // @ManyToOne(fetch = FetchType.LAZY)
     // @JoinColumn(nullable = false, name = "userId")
     // private Usuario usuario;

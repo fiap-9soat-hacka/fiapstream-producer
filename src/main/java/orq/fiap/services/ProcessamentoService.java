@@ -59,7 +59,7 @@ public class ProcessamentoService {
             throw new BadRequestException("Invalid video file type: " + mimeType);
         }
 
-        String uuid = uploadedFile.getName() + "-" + UUID.randomUUID();
+        String uuid = videoData.getVideo().fileName() + "-" + UUID.randomUUID();
         VideoDataUUID videoDataUUID = new VideoDataUUID(videoData.getVideo().fileName(), uuid, mimeType,
                 videoData.getWebhookUrl());
 

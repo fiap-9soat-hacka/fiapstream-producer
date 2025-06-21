@@ -52,6 +52,7 @@ public class HistoricoProcessamentoService {
     @Transactional(rollbackOn = Exception.class)
     public void criar(VideoDataUUID videoDataUUID) throws IllegalAccessException, InvocationTargetException {
         Processamento processamento = new Processamento();
+        processamento.setFilename(videoDataUUID.getFilename());
         processamento.setWebhookUrl(videoDataUUID.getWebhookUrl());
         processamento.setUuid(videoDataUUID.getUuid());
         processamento.setEstado(EstadoProcessamento.PENDENTE);

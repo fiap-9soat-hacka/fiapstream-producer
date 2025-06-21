@@ -29,5 +29,6 @@ public class Processamento {
     private String descricaoEstado;
     @Column(nullable = true)
     private String webhookUrl;
-
+    @Column(nullable = false)
+    private String filename;
 }
