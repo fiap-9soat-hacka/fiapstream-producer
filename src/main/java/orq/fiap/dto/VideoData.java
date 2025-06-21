@@ -15,11 +15,6 @@ public class VideoData {
     @NotEmpty(message = "Video is required.")
     protected FileUpload video;
 
-//    @RestForm
-//    @PartType(MediaType.TEXT_PLAIN)
-//    @NotEmpty(message = "Filename is required")
-//    private String filename;
-
     @RestForm
     @PartType(MediaType.TEXT_PLAIN)
     protected String webhookUrl;

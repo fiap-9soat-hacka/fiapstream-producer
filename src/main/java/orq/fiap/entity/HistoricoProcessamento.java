@@ -7,7 +7,8 @@ import orq.fiap.utils.EstadoProcessamentoConverter;
 
 import java.time.LocalDateTime;
 
-@Entity()
+@Entity
+@Table(name = "HistoricoProcessamento")
 @Data
 public class HistoricoProcessamento {
     // UUID da solicitação
@@ -27,9 +28,10 @@ public class HistoricoProcessamento {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timestamp;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "userId")
-    private Usuario usuario;
-    @Column(name = "userId", nullable = false, insertable = false, updatable = false)
-    private Long userId;
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(nullable = false, name = "userId")
+    // private Usuario usuario;
+    // @Column(nullable = false, insertable = false, updatable = false)
+    // @Column(nullable = false)
+    // private Long userId;
 }

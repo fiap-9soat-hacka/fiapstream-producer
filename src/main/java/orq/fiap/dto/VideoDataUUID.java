@@ -1,24 +1,18 @@
 package orq.fiap.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class VideoDataUUID extends VideoData {
-
-    private String mimeType;
+@AllArgsConstructor
+public class VideoDataUUID {
+    private String filename;
     private String uuid;
+    private String mimeType;
+    private String webhookUrl;
 
     public VideoDataUUID() {
     }
-
-    public VideoDataUUID(VideoData videoData, String mimeType, String uuid) {
-        this.video = videoData.video;
-//        this.filename = videoData.filename;
-        this.webhookUrl = videoData.webhookUrl;
-        this.mimeType = mimeType;
-        this.uuid = uuid;
-    }
-
 }
