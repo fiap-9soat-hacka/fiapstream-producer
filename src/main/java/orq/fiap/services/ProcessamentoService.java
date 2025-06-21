@@ -2,15 +2,15 @@ package orq.fiap.services;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vertx.core.json.JsonObject;
-import jakarta.transaction.Transactional;
 import org.apache.tika.Tika;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -18,7 +18,6 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
-import orq.fiap.entity.HistoricoProcessamento;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -41,8 +40,12 @@ public class ProcessamentoService {
 
     /**
      * Salva o vídeo no bucket S3 e envia solicitação de processamento
+     * 
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
      */
-    public void iniciarProcessamento(VideoData videoData) throws IOException {
+    public void iniciarProcessamento(VideoData videoData)
+            throws IOException, IllegalAccessException, InvocationTargetException {
         if (videoData.getVideo() == null) {
             throw new BadRequestException("Video file is required and must exist");
         }
@@ -56,8 +59,9 @@ public class ProcessamentoService {
             throw new BadRequestException("Invalid video file type: " + mimeType);
         }
 
-        String uuid = uploadedFile.getName() + "-" + UUID.randomUUID();
-        VideoDataUUID videoDataUUID = new VideoDataUUID(videoData, mimeType, uuid);
+        String uuid = videoData.getVideo().fileName() + "-" + UUID.randomUUID();
+        VideoDataUUID videoDataUUID = new VideoDataUUID(videoData.getVideo().fileName(), uuid, mimeType,
+                videoData.getWebhookUrl());
 
         PutObjectResponse putResponse = s3Client.putObject(buildPutRequest(videoDataUUID),
                 RequestBody.fromFile(uploadedFile));
@@ -76,9 +80,9 @@ public class ProcessamentoService {
 
     private PutObjectRequest buildPutRequest(VideoDataUUID videoData) {
         return PutObjectRequest.builder()
-            .bucket(bucketName)
-            .key(videoData.getUuid())
-            .contentType(videoData.getMimeType())
-            .build();
+                .bucket(bucketName)
+                .key(videoData.getUuid())
+                .contentType(videoData.getMimeType())
+                .build();
     }
 }

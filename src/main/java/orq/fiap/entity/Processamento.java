@@ -1,17 +1,22 @@
 package orq.fiap.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Data;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.utils.EstadoProcessamentoConverter;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "HistoricoProcessamento")
 @Data
-public class HistoricoProcessamento {
-    // UUID da solicitação
+public class Processamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,17 +29,6 @@ public class HistoricoProcessamento {
     private String descricaoEstado;
     @Column(nullable = true)
     private String webhookUrl;
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime timestamp;
-
     @Column(nullable = false)
     private String filename;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(nullable = false, name = "userId")
-    // private Usuario usuario;
-    // @Column(nullable = false, insertable = false, updatable = false)
-    // @Column(nullable = false)
-    // private Long userId;
 }
