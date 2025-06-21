@@ -1,7 +1,15 @@
 package orq.fiap.services;
 
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import orq.fiap.dto.MessageResponseData;
@@ -12,19 +20,6 @@ import orq.fiap.entity.Processamento;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
-
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.apache.commons.beanutils.BeanUtils;
-
-import com.aayushatharva.brotli4j.common.annotations.Local;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.quarkus.logging.Log;
 
 @RequestScoped
 public class HistoricoProcessamentoService {
@@ -37,6 +32,9 @@ public class HistoricoProcessamentoService {
 
     @Inject
     WebhookService webhookService;
+
+    @Inject
+    EmailService emailService;
 
     /**
      * Recupera o ultimo estado (atual) relacionado a um processamento.
@@ -79,6 +77,8 @@ public class HistoricoProcessamentoService {
             throws JsonProcessingException, InvocationTargetException, ReflectiveOperationException {
         ObjectMapper objectMapper = new ObjectMapper();
         MessageResponseData responseData = objectMapper.readValue(request, MessageResponseData.class);
+
+        // emailService.sendEmail(); TODO email não funciona
 
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
 

@@ -115,6 +115,10 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-mailer</artifactId>
+        </dependency>
         <!-- TEST DEPENDENCIES -->
         <dependency>
             <groupId>io.quarkus</groupId>
