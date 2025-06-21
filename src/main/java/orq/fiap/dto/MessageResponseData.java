@@ -10,7 +10,6 @@ import orq.fiap.enums.EstadoProcessamento;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseData {
-    String filename;
-    EstadoProcessamento estado;
+public class MessageResponseData extends ResponseData {
+    String key;
 }

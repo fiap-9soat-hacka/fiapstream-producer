@@ -4,6 +4,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import orq.fiap.dto.MessageResponseData;
 import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoDataUUID;
 import orq.fiap.entity.HistoricoProcessamento;
@@ -34,6 +35,9 @@ public class HistoricoProcessamentoService {
     @Inject
     ProcessamentoRepository processamentoRepository;
 
+    @Inject
+    WebhookService webhookService;
+
     /**
      * Recupera o ultimo estado (atual) relacionado a um processamento.
      * 
@@ -63,25 +67,33 @@ public class HistoricoProcessamentoService {
 
         processamentoRepository.persist(processamento);
         historicoProcessamentoRepository.persist(historicoProcessamento);
+
+        ResponseData responseData = new ResponseData();
+        responseData.setFilename(processamento.getFilename());
+        responseData.setEstado(EstadoProcessamento.PENDENTE);
+
+        webhookService.sendData(processamento.getWebhookUrl(), responseData);
     }
 
     public void atualizarEstado(String request)
             throws JsonProcessingException, InvocationTargetException, ReflectiveOperationException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ResponseData responseData = objectMapper.readValue(request, ResponseData.class);
+        MessageResponseData responseData = objectMapper.readValue(request, MessageResponseData.class);
 
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
 
         }
 
-        persistirNaBase(responseData);
+        persistirNaBaseEEnviarWebhook(responseData);
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public void persistirNaBase(ResponseData responseData)
+    public void persistirNaBaseEEnviarWebhook(MessageResponseData responseData)
             throws ReflectiveOperationException, InvocationTargetException {
         Processamento processamento = processamentoRepository
                 .findById(responseData.getKey());
+
+        webhookService.sendData(processamento.getWebhookUrl(), responseData);
 
         HistoricoProcessamento novoHistoricoProcessamento = new HistoricoProcessamento();
         BeanUtils.copyProperties(novoHistoricoProcessamento, processamento);
