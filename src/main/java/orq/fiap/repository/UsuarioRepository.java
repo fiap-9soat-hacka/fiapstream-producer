@@ -26,14 +26,14 @@ public class UsuarioRepository implements PanacheRepository<Usuario> {
      */
     public Long add(String username, String password, String email, String role) {
         Usuario usuario = new Usuario();
-        usuario.username = username;
-        usuario.password = BcryptUtil.bcryptHash(password);
-        usuario.role = role;
-        usuario.email = email;
+        usuario.setUsername(username);
+        usuario.setEmail(email);
+        usuario.setRole(role);
+        usuario.setPassword(BcryptUtil.bcryptHash(password));
 
         persist(usuario);
 
-        return usuario.id;
+        return usuario.getId();
     }
 
     public Optional<Usuario> findByUsername(String username){

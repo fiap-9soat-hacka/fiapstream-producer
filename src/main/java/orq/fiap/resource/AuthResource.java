@@ -1,6 +1,7 @@
 package orq.fiap.resource;
 
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import orq.fiap.dto.AuthSignInRequest;
 import orq.fiap.dto.UserCreateRequest;
 import orq.fiap.services.AuthService;
 
@@ -28,14 +30,21 @@ public class AuthResource {
     @Transactional
     @POST
     public Response signUp(@Valid UserCreateRequest userCreateRequest){
-        authService.signUp(userCreateRequest);
+        Long userId = authService.signUp(userCreateRequest);
 
-        return Response.created(URI.create("/user")).build();
+        return Response.created(URI.create("/user/" + userId)).build();
     }
 
-    @Path("test")
+    @Path("sign-in")
+    @Transactional
+    @POST
+    public Response signIn(@Valid AuthSignInRequest signInRequest){
+        return Response.ok(authService.signIn(signInRequest.username(), signInRequest.password())).build();
+    }
+
+    @Path("me")
     @GET
-    @Authenticated
+    @RolesAllowed({"user"})
     public Response test(@Context SecurityContext securityContext){
         return Response.ok(securityContext).build();
     }
