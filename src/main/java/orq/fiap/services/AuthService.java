@@ -21,7 +21,7 @@ public class AuthService {
     @Inject
     UsuarioService usuarioService;
 
-    public Long signUp(UserCreateRequest request){
+    public Long signUp(UserCreateRequest request) {
         Long userId = usuarioService.add(request);
 
         Log.infof("Generated user id: {}", userId);
@@ -29,15 +29,15 @@ public class AuthService {
         return userId;
     }
 
-    public String signIn(String username, String password){
+    public String signIn(String username, String password) {
         Usuario usuario = usuarioService.findByUsername(username);
-        if (BcryptUtil.matches(password, usuario.getPassword())){
+        if (BcryptUtil.matches(password, usuario.getPassword())) {
 
             return Jwt.issuer("https://fiapstream.fiap.org")
-                .upn(usuario.getUsername())
-                .groups(new HashSet<>(List.of("user")))
-                .claim(Claims.sub, usuario.getUsername())
-                .sign();
+                    .upn(usuario.getUsername())
+                    .groups(new HashSet<>(List.of("user")))
+                    .claim(Claims.sub, usuario.getUsername())
+                    .sign();
         }
 
         throw new NotFoundException("Invalid username or password");

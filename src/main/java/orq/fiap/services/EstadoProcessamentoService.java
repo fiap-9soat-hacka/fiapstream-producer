@@ -79,7 +79,10 @@ public class EstadoProcessamentoService {
         MessageResponseData responseData = objectMapper.readValue(request, MessageResponseData.class);
 
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
-            emailService.sendEmail("du_ikei@hotmail.com", responseData.getFilename());
+            Processamento processamento = processamentoRepository.findById(responseData.getKey());
+            String email = processamento.getUsuarios().iterator().next().getEmail();
+            // String email = "teste@teste.com"
+            emailService.sendEmail(email, responseData.getFilename());
         }
 
         persistirNaBaseEEnviarWebhook(responseData);
