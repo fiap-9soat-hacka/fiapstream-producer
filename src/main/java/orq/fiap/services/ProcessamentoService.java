@@ -30,7 +30,7 @@ public class ProcessamentoService {
     S3Client s3Client;
 
     @Inject
-    HistoricoProcessamentoService historicoProcessamentoService;
+    EstadoProcessamentoService historicoProcessamentoService;
 
     @ConfigProperty(name = "bucket.name")
     String bucketName;

@@ -22,7 +22,7 @@ import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
 
 @RequestScoped
-public class HistoricoProcessamentoService {
+public class EstadoProcessamentoService {
 
     @Inject
     HistoricoProcessamentoRepository historicoProcessamentoRepository;
@@ -78,10 +78,8 @@ public class HistoricoProcessamentoService {
         ObjectMapper objectMapper = new ObjectMapper();
         MessageResponseData responseData = objectMapper.readValue(request, MessageResponseData.class);
 
-        // emailService.sendEmail(); TODO email não funciona
-
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
-
+            emailService.sendEmail("du_ikei@hotmail.com", responseData.getFilename());
         }
 
         persistirNaBaseEEnviarWebhook(responseData);

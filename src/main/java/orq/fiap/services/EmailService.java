@@ -11,8 +11,12 @@ public class EmailService {
     @Inject
     Mailer mailer;
 
-    public void sendEmail() {
+    public void sendEmail(String email, String filename) {
         mailer.send(
-                Mail.withText("du_ikei@hotmail.com", "Hello from Quarkus", "This is a test email."));
+                Mail.withText(email,
+                        "FiapStream - Falha na Requisição",
+                        "Esse é um email automático para avisá-lo que a sua requisição para o processamento do video \""
+                                + filename +
+                                "\" falhou. Por favor, verifique se o seu input é válido e tente novamente."));
     }
 }

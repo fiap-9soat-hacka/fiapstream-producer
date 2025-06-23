@@ -16,13 +16,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import orq.fiap.entity.HistoricoProcessamento;
-import orq.fiap.services.HistoricoProcessamentoService;
+import orq.fiap.services.EstadoProcessamentoService;
 
 @ApplicationScoped
 @Path("/estado")
 public class EstadoResource {
     @Inject
-    HistoricoProcessamentoService historicoProcessamentoService;
+    EstadoProcessamentoService historicoProcessamentoService;
 
     @Path("{uuid}")
     @GET
