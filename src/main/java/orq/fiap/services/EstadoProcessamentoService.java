@@ -80,7 +80,7 @@ public class EstadoProcessamentoService {
 
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
             Processamento processamento = processamentoRepository.findById(responseData.getKey());
-            String email = processamento.getUsuarios().iterator().next().getEmail();
+            String email = processamento.getUsuario().getEmail();
             // String email = "teste@teste.com"
             emailService.sendEmail(email, responseData.getFilename());
         }

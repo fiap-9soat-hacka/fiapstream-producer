@@ -20,21 +20,18 @@ public class HistoricoProcessamento {
     @Column(nullable = false)
     @Convert(converter = EstadoProcessamentoConverter.class)
     private EstadoProcessamento estado;
-    @Column(length = 500, nullable = true)
+    @Column(length = 500)
     private String descricaoEstado;
-    @Column(nullable = true)
+    @Column()
     private String webhookUrl;
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime timestamp;
-
     @Column(nullable = false)
     private String filename;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(nullable = false, name = "userId")
-    // private Usuario usuario;
-    // @Column(nullable = false, insertable = false, updatable = false)
-    // @Column(nullable = false)
-    // private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "userId", updatable = false, insertable = false)
+    private Usuario usuario;
+    @Column(nullable = false, name = "userId")
+    private Long userId;
 }

@@ -3,5 +3,7 @@
   <component name="DiffGenerationConfig">
     <option name="snapshotDb" value="false" />
     <option name="snapshotModelValue" value="fiapstream-producer:fiapstream-producer" />
+    <option name="sourceModelValue" value="fiapstream-producer:fiapstream-producer" />
+    <option name="targetDbValue" value="179991cd-fc30-40e2-8c27-795c9d908664" />
   </component>
 </project>
