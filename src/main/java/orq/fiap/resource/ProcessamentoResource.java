@@ -1,5 +1,7 @@
 package orq.fiap.resource;
 
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -20,6 +22,7 @@ public class ProcessamentoResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Transactional
+    @RolesAllowed({"user"})
     public Response solicitarProcessamento(VideoData videoData) throws Exception {
         this.processamentoService.iniciarProcessamento(videoData);
 

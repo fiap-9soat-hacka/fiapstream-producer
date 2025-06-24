@@ -17,6 +17,7 @@ import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoDataUUID;
 import orq.fiap.entity.HistoricoProcessamento;
 import orq.fiap.entity.Processamento;
+import orq.fiap.entity.Usuario;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
@@ -36,6 +37,9 @@ public class EstadoProcessamentoService {
     @Inject
     EmailService emailService;
 
+    @Inject
+    UsuarioService usuarioService;
+
     /**
      * Recupera o ultimo estado (atual) relacionado a um processamento.
      * 
@@ -53,11 +57,15 @@ public class EstadoProcessamentoService {
 
     @Transactional(rollbackOn = Exception.class)
     public void criar(VideoDataUUID videoDataUUID) throws IllegalAccessException, InvocationTargetException {
+        Usuario usuarioAutenticado = usuarioService.getAuthUser();
+
         Processamento processamento = new Processamento();
         processamento.setFilename(videoDataUUID.getFilename());
         processamento.setWebhookUrl(videoDataUUID.getWebhookUrl());
         processamento.setUuid(videoDataUUID.getUuid());
         processamento.setEstado(EstadoProcessamento.PENDENTE);
+        processamento.setUserId(usuarioAutenticado.getId());
+
 
         HistoricoProcessamento historicoProcessamento = new HistoricoProcessamento();
         BeanUtils.copyProperties(historicoProcessamento, processamento);
