@@ -21,6 +21,7 @@ import orq.fiap.entity.Usuario;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
+import orq.fiap.utils.StringUtils;
 
 @RequestScoped
 public class EstadoProcessamentoService {
@@ -39,6 +40,9 @@ public class EstadoProcessamentoService {
 
     @Inject
     UsuarioService usuarioService;
+
+    @Inject
+    StringUtils stringUtils;
 
     /**
      * Recupera o ultimo estado (atual) relacionado a um processamento.
@@ -82,8 +86,7 @@ public class EstadoProcessamentoService {
 
     public void atualizarEstado(String request)
             throws JsonProcessingException, InvocationTargetException, ReflectiveOperationException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        MessageResponseData responseData = objectMapper.readValue(request, MessageResponseData.class);
+        MessageResponseData responseData = stringUtils.convert(request, MessageResponseData.class);
 
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
             Processamento processamento = processamentoRepository.findById(responseData.getKey());

@@ -7,6 +7,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.quarkus.logging.Log;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.control.ActivateRequestContext;
@@ -22,18 +23,18 @@ import orq.fiap.services.EstadoProcessamentoService;
 @Path("/estado")
 public class EstadoResource {
     @Inject
-    EstadoProcessamentoService historicoProcessamentoService;
+    EstadoProcessamentoService estadoProcessamentoService;
 
     @Path("{uuid}")
     @GET
     public HistoricoProcessamento getEstadoAtual(@PathParam("uuid") String uuid) {
-        return this.historicoProcessamentoService.getEstadoAtual(uuid);
+        return this.estadoProcessamentoService.getEstadoAtual(uuid);
     }
 
     @Path("{uuid}/historico")
     @GET
     public List<HistoricoProcessamento> getHistorico(@PathParam("uuid") String uuid) {
-        return this.historicoProcessamentoService.getHistorico(uuid);
+        return this.estadoProcessamentoService.getHistorico(uuid);
     }
 
     @Incoming("processador-responses")
@@ -41,7 +42,7 @@ public class EstadoResource {
     @ActivateRequestContext
     public Response processarResposta(String mensagem)
             throws JsonProcessingException, ReflectiveOperationException {
-        historicoProcessamentoService.atualizarEstado(mensagem);
+        estadoProcessamentoService.atualizarEstado(mensagem);
         return Response.ok().build();
     }
 }
