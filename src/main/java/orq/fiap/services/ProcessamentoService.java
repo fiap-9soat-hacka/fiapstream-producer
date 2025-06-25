@@ -15,10 +15,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @ApplicationScoped
 public class ProcessamentoService {
@@ -60,12 +63,12 @@ public class ProcessamentoService {
         VideoDataUUID videoDataUUID = new VideoDataUUID(videoData.getVideo().fileName(), uuid, mimeType,
                 videoData.getWebhookUrl());
 
-//        PutObjectResponse putResponse = s3Client.putObject(buildPutRequest(videoDataUUID),
-//                RequestBody.fromFile(uploadedFile));
-//
-//        if (putResponse == null) {
-//            throw new WebApplicationException("Failed to upload file to S3");
-//        }
+        PutObjectResponse putResponse = s3Client.putObject(buildPutRequest(videoDataUUID),
+                RequestBody.fromFile(uploadedFile));
+
+        if (putResponse == null) {
+            throw new WebApplicationException("Failed to upload file to S3");
+        }
 
         ObjectMapper mapper = new ObjectMapper();
         String encoded = mapper.writeValueAsString(videoDataUUID);

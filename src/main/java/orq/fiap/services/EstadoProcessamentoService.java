@@ -66,7 +66,6 @@ public class EstadoProcessamentoService {
         processamento.setEstado(EstadoProcessamento.PENDENTE);
         processamento.setUserId(usuarioAutenticado.getId());
 
-
         HistoricoProcessamento historicoProcessamento = new HistoricoProcessamento();
         BeanUtils.copyProperties(historicoProcessamento, processamento);
         historicoProcessamento.setTimestamp(LocalDateTime.now());
@@ -89,7 +88,6 @@ public class EstadoProcessamentoService {
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
             Processamento processamento = processamentoRepository.findById(responseData.getKey());
             String email = processamento.getUsuario().getEmail();
-            // String email = "teste@teste.com"
             emailService.sendEmail(email, responseData.getFilename());
         }
 
@@ -101,6 +99,7 @@ public class EstadoProcessamentoService {
             throws ReflectiveOperationException, InvocationTargetException {
         Processamento processamento = processamentoRepository
                 .findById(responseData.getKey());
+        processamento.setEstado(responseData.getEstado());
 
         webhookService.sendData(processamento.getWebhookUrl(), responseData);
 
