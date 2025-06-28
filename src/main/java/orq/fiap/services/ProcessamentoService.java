@@ -3,6 +3,7 @@ package orq.fiap.services;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 import java.util.UUID;
 
 import org.apache.tika.Tika;
@@ -12,16 +13,23 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
+import orq.fiap.dto.MessageResponseData;
+import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 @ApplicationScoped
 public class ProcessamentoService {
@@ -76,6 +84,26 @@ public class ProcessamentoService {
         estadoProcessamentoService.criar(videoDataUUID);
 
         emitter.send(encoded);
+    }
+
+    public String createPresignedGetUrl(String uuid) {
+        try (S3Presigner presigner = S3Presigner.create()) {
+
+            GetObjectRequest objectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(uuid)
+                    .build();
+
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(10))
+                    .getObjectRequest(objectRequest)
+                    .build();
+
+            PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+            Log.info("Presigned URL: " + presignedRequest.url().toString());
+
+            return presignedRequest.url().toExternalForm();
+        }
     }
 
     private PutObjectRequest buildPutRequest(VideoDataUUID videoData) {
