@@ -47,12 +47,6 @@ public class EstadoProcessamentoService {
     @Inject
     AuthService authService;
 
-    /**
-     * Recupera o ultimo estado (atual) relacionado a um processamento.
-     * 
-     * @param uuid
-     * @return
-     */
     public Processamento getEstadoAtual(String uuid) {
         return authService.validarUsuario(uuid);
     }
