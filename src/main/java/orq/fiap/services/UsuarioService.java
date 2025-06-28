@@ -24,7 +24,7 @@ public class UsuarioService {
      * Não funciona para endpoints não protegidos.
      */
     public Usuario getAuthUser() {
-        return this.findByUsername(username);
+        return findByUsername(username);
     }
 
     public Usuario findByUsername(String username) {
@@ -32,9 +32,7 @@ public class UsuarioService {
     }
 
     public Long add(UserCreateRequest request) {
-        Long userId = usuarioRepository.add(request.username(), request.password(), request.email());
-
-        return userId;
+        return usuarioRepository.add(request.username(), request.password(), request.email());
     }
 
 }
