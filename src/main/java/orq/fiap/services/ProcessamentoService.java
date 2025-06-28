@@ -43,6 +43,15 @@ public class ProcessamentoService {
     @ConfigProperty(name = "bucket.name")
     String bucketName;
 
+    @ConfigProperty(name = "quarkus.s3.aws.credentials.static-provider.access-key-id")
+    String acessKey;
+
+    @ConfigProperty(name = "quarkus.s3.aws.credentials.static-provider.secret-access-key")
+    String secretAcessKey;
+
+    @ConfigProperty(name = "quarkus.s3.aws.credentials.static-provider.session-token")
+    String sessionToken;
+
     @Channel("processador-requests")
     Emitter<String> emitter;
 
@@ -92,11 +101,14 @@ public class ProcessamentoService {
     public String createPresignedGetUrl(String uuid) {
         authService.validarUsuario(uuid);
 
-        try (S3Presigner presigner = S3Presigner.create()) {
+        System.setProperty("aws.accessKeyId", acessKey);
+        System.setProperty("aws.secretAccessKey", secretAcessKey);
+        System.setProperty("aws.sessionToken", sessionToken);
 
+        try (S3Presigner presigner = S3Presigner.create()) {
             GetObjectRequest objectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(uuid)
+                    .key(uuid + ".zip")
                     .build();
 
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
