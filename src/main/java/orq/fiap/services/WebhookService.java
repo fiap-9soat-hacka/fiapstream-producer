@@ -22,7 +22,7 @@ public class WebhookService {
                     Log.info("Response: " + response.bodyAsString());
                 })
                 .onFailure(err -> {
-                    Log.info("Failed to send data: " + err.getMessage());
+                    Log.info("Failed to send webhook: " + err.getMessage());
                 });
     }
 }
