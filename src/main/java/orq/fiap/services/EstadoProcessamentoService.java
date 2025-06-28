@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.quarkus.logging.Log;
+import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -44,18 +44,22 @@ public class EstadoProcessamentoService {
     @Inject
     StringUtils stringUtils;
 
+    @Inject
+    AuthService authService;
+
     /**
      * Recupera o ultimo estado (atual) relacionado a um processamento.
      * 
      * @param uuid
      * @return
      */
-    public HistoricoProcessamento getEstadoAtual(String uuid) {
-        HistoricoProcessamento processamento = this.historicoProcessamentoRepository.findLatestById(uuid);
-        return processamento;
+    public Processamento getEstadoAtual(String uuid) {
+        return authService.validarUsuario(uuid);
     }
 
     public List<HistoricoProcessamento> getHistorico(String uuid) {
+        authService.validarUsuario(uuid);
+
         return this.historicoProcessamentoRepository.findAllById(uuid);
     }
 
@@ -85,7 +89,7 @@ public class EstadoProcessamentoService {
     }
 
     public void atualizarEstado(String request)
-            throws JsonProcessingException, InvocationTargetException, ReflectiveOperationException {
+            throws ReflectiveOperationException {
         MessageResponseData responseData = stringUtils.convert(request, MessageResponseData.class);
 
         if (responseData.getEstado() == EstadoProcessamento.ERRO) {
@@ -99,7 +103,7 @@ public class EstadoProcessamentoService {
 
     @Transactional(rollbackOn = Exception.class)
     public void persistirNaBaseEEnviarWebhook(MessageResponseData responseData)
-            throws ReflectiveOperationException, InvocationTargetException {
+            throws ReflectiveOperationException {
         Processamento processamento = processamentoRepository
                 .findById(responseData.getKey());
         processamento.setEstado(responseData.getEstado());

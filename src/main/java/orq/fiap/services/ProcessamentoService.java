@@ -46,6 +46,9 @@ public class ProcessamentoService {
     @Channel("processador-requests")
     Emitter<String> emitter;
 
+    @Inject
+    AuthService authService;
+
     /**
      * Salva o vídeo no bucket S3 e envia solicitação de processamento
      * 
@@ -87,6 +90,8 @@ public class ProcessamentoService {
     }
 
     public String createPresignedGetUrl(String uuid) {
+        authService.validarUsuario(uuid);
+
         try (S3Presigner presigner = S3Presigner.create()) {
 
             GetObjectRequest objectRequest = GetObjectRequest.builder()

@@ -2,13 +2,18 @@ package orq.fiap.services;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.logging.Log;
+import io.quarkus.security.ForbiddenException;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
 import orq.fiap.dto.UserCreateRequest;
+import orq.fiap.entity.Processamento;
 import orq.fiap.entity.Usuario;
+import orq.fiap.repository.ProcessamentoRepository;
 import orq.fiap.repository.UsuarioRepository;
 
 import java.util.HashSet;
@@ -20,6 +25,12 @@ public class AuthService {
 
     @Inject
     UsuarioService usuarioService;
+
+    @Inject
+    ProcessamentoRepository processamentoRepository;
+
+    @Inject
+    JsonWebToken jwt;
 
     public Long signUp(UserCreateRequest request) {
         Long userId = usuarioService.add(request);
@@ -37,10 +48,20 @@ public class AuthService {
                     .upn(usuario.getUsername())
                     .groups(new HashSet<>(List.of("user")))
                     .claim(Claims.sub, usuario.getUsername())
+                    .claim("userId", usuario.getId())
                     .sign();
         }
 
         throw new NotFoundException("Invalid username or password");
     }
 
+    public Processamento validarUsuario(String uuid) {
+        Processamento processamento = this.processamentoRepository.findById(uuid);
+
+        if (!processamento.getUsuario().getId().equals(Long.valueOf(jwt.getClaim("userId").toString()))) {
+            throw new ForbiddenException("Usuário não autorizado a acessar este processamento.");
+        }
+
+        return processamento;
+    }
 }
