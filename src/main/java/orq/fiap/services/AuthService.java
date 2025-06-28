@@ -56,7 +56,7 @@ public class AuthService {
     }
 
     public Processamento validarUsuario(String uuid) {
-        Processamento processamento = this.processamentoRepository.findById(uuid);
+        Processamento processamento = processamentoRepository.findById(uuid);
 
         if (!processamento.getUsuario().getId().equals(Long.valueOf(jwt.getClaim("userId").toString()))) {
             throw new ForbiddenException("Usuário não autorizado a acessar este processamento.");
