@@ -1,4 +1,4 @@
-package orq.fiap.service;
+package orq.fiap.services;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.time.Duration;
 
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
-import org.jboss.resteasy.reactive.client.api.ClientMultipartForm;
 import org.jboss.resteasy.reactive.multipart.FileUpload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,15 +25,10 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.RabbitMqQuarkusTestResource;
 import orq.fiap.dto.VideoData;
-import orq.fiap.services.AuthService;
-import orq.fiap.services.EstadoProcessamentoService;
-import orq.fiap.services.ProcessamentoService;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 @QuarkusTest
 @QuarkusTestResource(RabbitMqQuarkusTestResource.class)

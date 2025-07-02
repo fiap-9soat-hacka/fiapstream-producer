@@ -1,4 +1,4 @@
-package orq.fiap.service;
+package orq.fiap.services;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,8 +18,6 @@ import orq.fiap.entity.Processamento;
 import orq.fiap.entity.Usuario;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.ProcessamentoRepository;
-import orq.fiap.services.AuthService;
-import orq.fiap.services.UsuarioService;
 
 @QuarkusTest
 public class AuthServiceTest {
