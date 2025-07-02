@@ -1,0 +1,42 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.3
+    container_name: my-mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: fiap
+        MYSQL_USER: fiap
+        MYSQL_PASSWORD: fiap
+        MYSQL_DATABASE: fiapstream
+        MYSQL_ROOT_HOST: "%"
+
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+
+#  minio:
+#    image: docker.io/bitnami/minio:2024
+#    ports:
+#      - "9000:9000"
+#      - "9001:9001"
+#    environment:
+#      MINIO_ROOT_USER: fiapstream
+#      MINIO_ROOT_PASSWORD: fiapstream
+#      MINIO_DEFAULT_BUCKETS: fiap-bucket
+#    volumes:
+#      - "minio:/data"
+
+volumes:
+  mysql:
+  rabbitmq:
+  minio:
