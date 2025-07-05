@@ -64,4 +64,8 @@ public class AuthService {
 
         return processamento;
     }
+
+    public Integer retornarUserId() {
+        return jwt.getClaim("userId");
+    }
 }

@@ -7,14 +7,15 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import io.quarkus.logging.Log;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.Session;
-import jakarta.ws.rs.InternalServerErrorException;
 import orq.fiap.dto.MessageResponseData;
 import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoDataUUID;
@@ -24,7 +25,7 @@ import orq.fiap.entity.Usuario;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
-import orq.fiap.socket.ProcessamentoSocket;
+import orq.fiap.socket.ProcessamentoSocketClient;
 import orq.fiap.utils.StringUtils;
 
 @RequestScoped
@@ -52,7 +53,7 @@ public class EstadoProcessamentoService {
     AuthService authService;
 
     @Inject
-    ProcessamentoSocket processamentoSocket;
+    ProcessamentoSocketClient processamentoSocket;
 
     @ConfigProperty(name = "websocket.uri")
     String websocketUri;
@@ -89,7 +90,9 @@ public class EstadoProcessamentoService {
         responseData.setFilename(processamento.getFilename());
         responseData.setEstado(EstadoProcessamento.PENDENTE);
 
-        webhookService.sendData(processamento.getWebhookUrl(), responseData);
+        if (!processamento.getWebhookUrl().isEmpty()) {
+            webhookService.sendData(processamento.getWebhookUrl(), responseData);
+        }
     }
 
     public void atualizarEstado(String request)
@@ -101,9 +104,11 @@ public class EstadoProcessamentoService {
             String email = processamento.getUsuario().getEmail();
             emailService.sendEmail(email, responseData.getFilename());
         } else if (responseData.getEstado() == EstadoProcessamento.CONCLUIDO) {
+            Log.info(authService.retornarUserId());
             try {
-                URI uri = new URI(websocketUri);
-                Session session = ContainerProvider.getWebSocketContainer().connectToServer(ProcessamentoSocket.class,
+                URI uri = new URI(websocketUri + "/");
+                Session session = ContainerProvider.getWebSocketContainer().connectToServer(
+                        ProcessamentoSocketClient.class,
                         uri);
                 processamentoSocket.open(session);
                 processamentoSocket.message(responseData.getKey());
@@ -123,7 +128,9 @@ public class EstadoProcessamentoService {
                 .findById(responseData.getKey());
         processamento.setEstado(responseData.getEstado());
 
-        webhookService.sendData(processamento.getWebhookUrl(), responseData);
+        if (!processamento.getWebhookUrl().isEmpty()) {
+            webhookService.sendData(processamento.getWebhookUrl(), responseData);
+        }
 
         HistoricoProcessamento novoHistoricoProcessamento = new HistoricoProcessamento();
         BeanUtils.copyProperties(novoHistoricoProcessamento, processamento);

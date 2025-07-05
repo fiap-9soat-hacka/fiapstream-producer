@@ -10,14 +10,14 @@ import jakarta.websocket.Session;
 
 @ApplicationScoped
 @ClientEndpoint
-public class ProcessamentoSocket {
+public class ProcessamentoSocketClient {
 
     public static final LinkedBlockingDeque<String> MESSAGES = new LinkedBlockingDeque<>();
 
     @OnOpen
     public void open(Session session) {
         MESSAGES.add("CONNECT");
-        session.getAsyncRemote().sendText("_ready_");
+        session.getAsyncRemote().sendText("finished");
     }
 
     @OnMessage

@@ -13,14 +13,14 @@ import jakarta.inject.Inject;
 public class ProcessamentoSocketTest {
 
     @Inject
-    ProcessamentoSocket processamentoSocket;
+    ProcessamentoSocketClient processamentoSocket;
 
     @Test
     public void testMessage() throws InterruptedException {
         String testUuid = "test-uuid";
         processamentoSocket.message(testUuid);
 
-        String retrievedMessage = ProcessamentoSocket.MESSAGES.poll(1, TimeUnit.SECONDS);
+        String retrievedMessage = ProcessamentoSocketClient.MESSAGES.poll(1, TimeUnit.SECONDS);
         assertEquals(testUuid, retrievedMessage, "The message should be added to the queue correctly.");
     }
 }
