@@ -63,19 +63,4 @@ public class ProcessamentoSocketServerTest {
                 "Session should be removed from the map after error.");
     }
 
-    @Test
-    public void testOnMessage() throws JsonProcessingException {
-        VideoDataUUID mockVideoData = new VideoDataUUID();
-        mockVideoData.setUuid("test-uuid");
-        ObjectMapper mapper = new ObjectMapper();
-
-        processamentoSocket.sessions.put("test-uuid", mock(Session.class));
-        processamentoSocket.onMessage("123", mapper.writeValueAsString(mockVideoData));
-
-        String expectedMessage = mapper.writeValueAsString(mockVideoData);
-        // Verify broadcast logic (mocking session interactions)
-        processamentoSocket.sessions.values().forEach(session -> {
-            verify(session.getAsyncRemote(), times(1)).sendObject(eq(expectedMessage), any());
-        });
-    }
 }

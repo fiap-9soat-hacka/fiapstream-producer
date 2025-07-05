@@ -20,29 +20,29 @@ import jakarta.websocket.server.ServerEndpoint;
 public class ProcessamentoSocketServer {
 
     Map<String, Session> sessions = new ConcurrentHashMap<>();
-    static final String VIDEO = "Video ";
+    static final String USER = "User: ";
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") String userId) {
-        broadcast(VIDEO + userId + " processing opened");
+        broadcast(USER + userId + ", processing opened");
         sessions.put(userId, session);
     }
 
     @OnClose
     public void onClose(Session session, @PathParam("userId") String userId) {
         sessions.remove(userId);
-        broadcast(VIDEO + userId + " processing closed");
+        broadcast(USER + userId + " processing closed");
     }
 
     @OnError
     public void onError(Session session, @PathParam("userId") String userId, Throwable throwable) {
         sessions.remove(userId);
-        broadcast(VIDEO + userId + " processing error: " + throwable);
+        broadcast(USER + userId + " processing error: " + throwable);
     }
 
     @OnMessage
     public void onMessage(String message, @PathParam("userId") String userId) {
-        broadcast(userId);
+        broadcast(message);
     }
 
     private void broadcast(String message) {

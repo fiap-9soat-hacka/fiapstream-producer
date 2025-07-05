@@ -9,6 +9,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
@@ -110,8 +112,10 @@ public class EstadoProcessamentoService {
                 Session session = ContainerProvider.getWebSocketContainer().connectToServer(
                         ProcessamentoSocketClient.class,
                         uri);
-                processamentoSocket.open(session);
-                processamentoSocket.message(responseData.getKey());
+
+                ObjectMapper mapper = new ObjectMapper();
+                processamentoSocket.message(mapper.writeValueAsString(responseData), session);
+                processamentoSocket.close(session);
             } catch (Exception e) {
                 // throw new InternalServerErrorException(e.getMessage());
                 Log.info("Websocket mock não enviado");
