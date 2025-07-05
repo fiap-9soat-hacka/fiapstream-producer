@@ -10,7 +10,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import io.quarkus.logging.Log;
-import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -104,9 +104,9 @@ public class EstadoProcessamentoService {
             String email = processamento.getUsuario().getEmail();
             emailService.sendEmail(email, responseData.getFilename());
         } else if (responseData.getEstado() == EstadoProcessamento.CONCLUIDO) {
-            Log.info(authService.retornarUserId());
+            Long userId = processamentoRepository.findById(responseData.getKey()).getUserId();
             try {
-                URI uri = new URI(websocketUri + "/");
+                URI uri = new URI(websocketUri + "/" + userId);
                 Session session = ContainerProvider.getWebSocketContainer().connectToServer(
                         ProcessamentoSocketClient.class,
                         uri);

@@ -42,8 +42,6 @@ public class ProcessamentoSocketServer {
 
     @OnMessage
     public void onMessage(String message, @PathParam("userId") String userId) {
-        Log.info(userId);
-        Log.info(message);
         broadcast(userId);
     }
 
