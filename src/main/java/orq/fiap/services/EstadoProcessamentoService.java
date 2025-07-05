@@ -1,17 +1,20 @@
 package orq.fiap.services;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.logging.Log;
-import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.Session;
+import jakarta.ws.rs.InternalServerErrorException;
 import orq.fiap.dto.MessageResponseData;
 import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoDataUUID;
@@ -21,6 +24,7 @@ import orq.fiap.entity.Usuario;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
+import orq.fiap.socket.ProcessamentoSocket;
 import orq.fiap.utils.StringUtils;
 
 @RequestScoped
@@ -46,6 +50,12 @@ public class EstadoProcessamentoService {
 
     @Inject
     AuthService authService;
+
+    @Inject
+    ProcessamentoSocket processamentoSocket;
+
+    @ConfigProperty(name = "websocket.uri")
+    String websocketUri;
 
     public Processamento getEstadoAtual(String uuid) {
         return authService.validarUsuario(uuid);
@@ -90,6 +100,17 @@ public class EstadoProcessamentoService {
             Processamento processamento = processamentoRepository.findById(responseData.getKey());
             String email = processamento.getUsuario().getEmail();
             emailService.sendEmail(email, responseData.getFilename());
+        } else if (responseData.getEstado() == EstadoProcessamento.CONCLUIDO) {
+            try {
+                URI uri = new URI(websocketUri);
+                Session session = ContainerProvider.getWebSocketContainer().connectToServer(ProcessamentoSocket.class,
+                        uri);
+                processamentoSocket.open(session);
+                processamentoSocket.message(responseData.getKey());
+            } catch (Exception e) {
+                // throw new InternalServerErrorException(e.getMessage());
+                Log.info("Websocket mock não enviado");
+            }
         }
 
         persistirNaBaseEEnviarWebhook(responseData);
