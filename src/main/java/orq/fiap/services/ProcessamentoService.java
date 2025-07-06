@@ -18,8 +18,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
-import orq.fiap.dto.MessageResponseData;
-import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
 import software.amazon.awssdk.core.sync.RequestBody;

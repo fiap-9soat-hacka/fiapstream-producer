@@ -1,5 +1,11 @@
 package orq.fiap.services;
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.logging.Log;
 import io.quarkus.security.ForbiddenException;
@@ -7,18 +13,10 @@ import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
-import org.eclipse.microprofile.jwt.Claims;
-import org.eclipse.microprofile.jwt.JsonWebToken;
-
 import orq.fiap.dto.UserCreateRequest;
 import orq.fiap.entity.Processamento;
 import orq.fiap.entity.Usuario;
 import orq.fiap.repository.ProcessamentoRepository;
-import orq.fiap.repository.UsuarioRepository;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class AuthService {
