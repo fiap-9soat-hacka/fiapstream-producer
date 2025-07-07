@@ -12,6 +12,8 @@ import io.quarkus.security.ForbiddenException;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import orq.fiap.dto.UserCreateRequest;
 import orq.fiap.entity.Processamento;
@@ -54,12 +56,16 @@ public class AuthService {
     }
 
     public Processamento validarUsuario(String uuid) {
-        Processamento processamento = processamentoRepository.findById(uuid);
+        try {
+            Processamento processamento = processamentoRepository.findById(uuid);
 
-        if (!processamento.getUsuario().getId().equals(Long.valueOf(jwt.getClaim("userId").toString()))) {
-            throw new ForbiddenException("Usuário não autorizado a acessar este processamento.");
+            if (!processamento.getUsuario().getId().equals(Long.valueOf(jwt.getClaim("userId").toString()))) {
+                throw new ForbiddenException("Usuário não autorizado a acessar este processamento.");
+            }
+
+            return processamento;
+        } catch (Exception ex) {
+            throw new BadRequestException();
         }
-
-        return processamento;
     }
 }

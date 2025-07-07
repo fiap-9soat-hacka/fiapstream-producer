@@ -31,4 +31,6 @@ public class Processamento {
     private Usuario usuario;
     @Column(nullable = false, name = "userId")
     private Long userId;
+    @Column(nullable = true, name = "presignedUrl")
+    private String presignedUrl;
 }

@@ -57,6 +57,9 @@ public class EstadoProcessamentoService {
     @Inject
     ProcessamentoSocketClient processamentoSocket;
 
+    @Inject
+    ProcessamentoService processamentoService;
+
     @ConfigProperty(name = "websocket.uri")
     String websocketUri;
 
@@ -106,20 +109,9 @@ public class EstadoProcessamentoService {
             String email = processamento.getUsuario().getEmail();
             emailService.sendEmail(email, responseData.getFilename());
         } else if (responseData.getEstado() == EstadoProcessamento.CONCLUIDO) {
-            Long userId = processamentoRepository.findById(responseData.getKey()).getUserId();
-            try {
-                URI uri = new URI(websocketUri + "/" + userId);
-                Session session = ContainerProvider.getWebSocketContainer().connectToServer(
-                        ProcessamentoSocketClient.class,
-                        uri);
-
-                ObjectMapper mapper = new ObjectMapper();
-                processamentoSocket.message(mapper.writeValueAsString(responseData), session);
-                processamentoSocket.close(session);
-            } catch (Exception e) {
-                // throw new InternalServerErrorException(e.getMessage());
-                Log.info("Websocket mock não enviado");
-            }
+            Processamento processamento = processamentoRepository.findById(responseData.getKey());
+            sendWebSocketMessage(responseData, processamento.getUserId());
+            getPresignedUrl(responseData, processamento);
         }
 
         persistirNaBaseEEnviarWebhook(responseData);
@@ -143,5 +135,28 @@ public class EstadoProcessamentoService {
         novoHistoricoProcessamento.setTimestamp(LocalDateTime.now());
 
         historicoProcessamentoRepository.persist(novoHistoricoProcessamento);
+    }
+
+    private void sendWebSocketMessage(MessageResponseData responseData, Long userId) {
+        try {
+            URI uri = new URI(websocketUri + "/" + userId);
+            Session session = ContainerProvider.getWebSocketContainer().connectToServer(
+                    ProcessamentoSocketClient.class,
+                    uri);
+
+            ObjectMapper mapper = new ObjectMapper();
+            processamentoSocket.message(mapper.writeValueAsString(responseData), session);
+            processamentoSocket.close(session);
+        } catch (Exception e) {
+            // throw new InternalServerErrorException(e.getMessage());
+            Log.info("Websocket mock não enviado");
+        }
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public void getPresignedUrl(MessageResponseData responseData, Processamento processamento) {
+        String preSignedUrl = processamentoService.createPresignedGetUrl(responseData.getKey());
+        processamento.setPresignedUrl(preSignedUrl);
+        processamentoRepository.getEntityManager().merge(processamento);
     }
 }

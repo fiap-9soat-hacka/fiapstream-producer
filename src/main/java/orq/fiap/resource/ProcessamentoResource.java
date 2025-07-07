@@ -13,12 +13,16 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import orq.fiap.dto.VideoData;
+import orq.fiap.repository.ProcessamentoRepository;
 import orq.fiap.services.ProcessamentoService;
 
 @Path("/processamento")
 public class ProcessamentoResource {
     @Inject
     ProcessamentoService processamentoService;
+
+    @Inject
+    ProcessamentoRepository processamentoRepository;
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -38,10 +42,10 @@ public class ProcessamentoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/url-video/{uuid}")
     @RolesAllowed({ "user" })
-    public Response getProcessamento(@RestPath String uuid) {
+    public Response getPresignedUrl(@RestPath String uuid) {
         return Response
                 .ok()
-                .entity(processamentoService.createPresignedGetUrl(uuid))
+                .entity(processamentoRepository.findById(uuid).getPresignedUrl())
                 .build();
     }
 

@@ -97,8 +97,6 @@ public class ProcessamentoService {
     }
 
     public String createPresignedGetUrl(String uuid) {
-        authService.validarUsuario(uuid);
-
         System.setProperty("aws.accessKeyId", acessKey);
         System.setProperty("aws.secretAccessKey", secretAcessKey);
         System.setProperty("aws.sessionToken", sessionToken);
