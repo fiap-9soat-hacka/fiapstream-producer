@@ -45,8 +45,7 @@ public class ProcessamentoResource {
     public Response getPresignedUrl(@RestPath String uuid) {
         return Response
                 .ok()
-                .entity(processamentoRepository.findById(uuid).getPresignedUrl())
+                .entity(processamentoService.getPresignedUrl(uuid))
                 .build();
     }
-
 }

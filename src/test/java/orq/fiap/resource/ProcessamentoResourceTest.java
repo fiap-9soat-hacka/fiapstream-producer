@@ -21,9 +21,6 @@ class ProcessamentoResourceTest {
     @InjectMock
     ProcessamentoService processamentoService;
 
-    @InjectMock
-    ProcessamentoRepository processamentoRepository;
-
     @Test
     @TestSecurity(authorizationEnabled = false)
     void testaSucessoSolicitarProcessamento() throws Exception {
@@ -40,9 +37,7 @@ class ProcessamentoResourceTest {
     void testaSucessoGetProcessamento() {
         String uuid = "123e4567-e89b-12d3-a456-426614174000";
         String url = "http://teste.com";
-        Processamento processamento = new Processamento();
-        processamento.setPresignedUrl(url);
-        when(processamentoRepository.findById(uuid)).thenReturn(processamento);
+        when(processamentoService.getPresignedUrl(uuid)).thenReturn(url);
 
         given()
                 .when()
@@ -50,6 +45,5 @@ class ProcessamentoResourceTest {
                 .then()
                 .statusCode(200)
                 .body(containsString(url));
-
     }
 }
