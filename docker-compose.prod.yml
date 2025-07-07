@@ -1,0 +1,35 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.3
+    container_name: my-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: fiap
+      MYSQL_USER: fiap
+      MYSQL_PASSWORD: fiap
+      MYSQL_DATABASE: fiapstream
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - mysql:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+
+  producer:
+    image: lamarcke/fiapstream-producer
+    restart: always
+    ports:
+      - "8080:8080"
+
+  processor:
+    image: lamarcke/fiapstream-processador
+    restart: always
+
+volumes:
+  mysql:
+  rabbitmq:
+  minio:
