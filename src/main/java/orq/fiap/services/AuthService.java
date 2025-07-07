@@ -2,6 +2,7 @@ package orq.fiap.services;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -56,16 +57,15 @@ public class AuthService {
     }
 
     public Processamento validarUsuario(String uuid) {
-        try {
-            Processamento processamento = processamentoRepository.findById(uuid);
 
-            if (!processamento.getUsuario().getId().equals(Long.valueOf(jwt.getClaim("userId").toString()))) {
-                throw new ForbiddenException("Usuário não autorizado a acessar este processamento.");
-            }
+        Processamento processamento = processamentoRepository.findByIdOptional(uuid)
+                .orElseThrow(BadRequestException::new);
 
-            return processamento;
-        } catch (Exception ex) {
-            throw new BadRequestException();
+        if (!processamento.getUsuario().getId().equals(Long.valueOf(jwt.getClaim("userId").toString()))) {
+            throw new ForbiddenException("Usuário não autorizado a acessar este processamento.");
         }
+
+        return processamento;
+
     }
 }
