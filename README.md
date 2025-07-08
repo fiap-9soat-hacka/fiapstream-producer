@@ -8,6 +8,8 @@ API para o projeto de Hackaton da pós-tech FIAP, turma 9SOAT.
 Essa API é responsável por orquestrar os pedidos de processamento de vídeo recebidos, encaminhando os pedidos ao serviço de processamento 
 e realizando o controle de estados e alarmes.
 
+## Arquitetura do Banco de Dados
+
 ![alt text](fiapstream.png)
 
 ## Configuração
@@ -25,9 +27,9 @@ AWS_ACCESS_KEY_ID=213921d...
 AWS_SECRET_ACCESS_KEY=12391239123... 
 # session_token da AWS
 AWS_SESSION_TOKEN=12319d12d.. 
-# a url onde o endpoint de websocket é exposto, https://localhost:8084 por padrão
+# a url onde o endpoint de websocket é exposto, 'http://localhost:8080/processamento' por padrão
 # recomendamos manter o valor padrão para essa propriedade.
-WEBSOCKET_URI=https://localhost:8084
+WEBSOCKET_URI=http://localhost:8080/processamento
 # Usuario do MySQL, 'fiap' por padrão
 MYSQL_USER=fiap
 # Senha do MySQL 'fiap' por padrão
@@ -48,7 +50,7 @@ docker compose -f docker-compose.prod.yml up -d
 ```
 
 É importante que seja especificado o arquivo `docker-compose.prod.yml` na subida, já que essa versão sobe e expõe todos os serviços 
-necessários. Esse deploy vai expor a aplicação principal na porta `:8080`, e o endereço do Websocket na porta `:8084`.
+necessários. Esse deploy vai expor a aplicação principal na porta `:8080`.
 
 ### Configuração
 

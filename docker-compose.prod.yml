@@ -39,7 +39,6 @@ services:
     restart: always
     ports:
       - "8080:8080"
-      - "8084:8084"
     environment:
       DB_URL: "db:3306"
       S3_ENDPOINT: "https://s3.amazonaws.com/"
