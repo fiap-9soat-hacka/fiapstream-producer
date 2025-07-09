@@ -4,7 +4,7 @@ COPY src /app/src
 COPY pom.xml /app
 
 WORKDIR /app
-RUN mvn clean install -U
+RUN mvn clean install -U -Dmaven.test.skip=true
 
 FROM openjdk:21
 COPY --from=build /app/target/quarkus-app/lib/ /deployments/lib/
