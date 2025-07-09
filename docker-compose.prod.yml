@@ -8,7 +8,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: fiapstream
       MYSQL_ROOT_HOST: "%"
@@ -20,6 +20,7 @@ services:
       - "3306:3306"
 
   rabbitmq:
+    hostname: rabbitmq
     env_file:
       - .env
     image: rabbitmq:3-management
@@ -40,23 +41,30 @@ services:
     ports:
       - "8080:8080"
     environment:
+      RABBITMQ_HOST: rabbitmq
       DB_URL: "db:3306"
-      S3_ENDPOINT: "https://s3.amazonaws.com/"
+    depends_on:
+      - rabbitmq
+      - db
     networks:
       - fiapstream
 
-  processor:
+  processador:
     env_file:
       - .env
     image: lamarcke/fiapstream-processador
     restart: always
+    environment:
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+      - db
     networks:
       - fiapstream
 
 volumes:
   mysql:
   rabbitmq:
-  minio:
 
 networks:
   fiapstream:

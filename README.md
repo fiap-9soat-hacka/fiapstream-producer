@@ -34,9 +34,6 @@ AWS_ACCESS_KEY_ID=213921d...
 AWS_SECRET_ACCESS_KEY=12391239123...
 # session_token da AWS
 AWS_SESSION_TOKEN=12319d12d..
-# a url onde o endpoint de websocket é exposto, 'http://localhost:8080/processamento' por padrão
-# recomendamos manter o valor padrão para essa propriedade.
-WEBSOCKET_URI=http://localhost:8080/processamento
 # Usuario do MySQL, 'fiap' por padrão
 MYSQL_USER=fiap
 # Senha do MySQL 'fiap' por padrão
@@ -49,14 +46,6 @@ RABBITMQ_PASSWORD=guest
 ```
 
 As credenciais da AWS podem ser obtidas atráves do arquivo `~/.aws/credentials`, caso você tenha o `AWS CLI` configurado.
-
-### Deploy
-
-Com a configuração feita, basta inicializar o deploy com o `docker compose`:
-
-```shell
-docker compose -f docker-compose.prod.yml up -d
-```
 
 É importante que seja especificado o arquivo `docker-compose.prod.yml` na subida, já que essa versão sobe e expõe todos os serviços
 necessários. Esse deploy vai expor a aplicação principal na porta `:8080`.
@@ -76,7 +65,17 @@ Recomendamos utilizar o nome `fiap-9soat-bucket` na criação do bucket. Caso ou
 #### RabbitMQ
 
 Por padrão, inicializamos as credenciais de inicialização do RabbitMQ (`guest`). Recomendamos que seja criado um novo usuario e senha após a subida do projeto, atráves da interface gráfica do RabbitMQ (`http://localhost:15672/`).  
-Após criação do usuario, lembre-se de atualizar as variaveis `RABBITMQ_USER` e `RABBITMQ_PASSWORD` corretamente.
+Após criação do usuario, lembre-se de atualizar as variaveis `RABBITMQ_USER` e `RABBITMQ_PASSWORD` corretamente.  
+Caso o log da(s) API(s) esteja apresentando erros de conexão ou autenticação, pode ser que o usuario padrão (`guest`) esteja mal configurado.  
+Recomendamos criar um usuario novo com todas as permissões necessárias no dashboard do RabbitMQ.  
+
+### Deploy
+
+Com a configuração feita, basta inicializar o deploy com o `docker compose`:
+
+```shell
+docker compose -f docker-compose.prod.yml up -d
+```
 
 ## Utilização
 Atenção: Necessário ter feito toda a configuração do passo [Configuracao](#configuração)!
