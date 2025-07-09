@@ -17,9 +17,9 @@ e realizando o controle de estados e alarmes.
 Para realizar a configuração do projeto, é necessário ter a CLI do `docker` com o plugin `docker compose` instalado.  
 Primeiramente, inicialize um arquivo `.env` na pasta raiz do projeto, e insira esse conteúdo:
 ```
-#opcional, usuario do sistema de email
+#usuario do sistema de email
 EMAIL_SENDER=meugmail@gmail.com 
-#opcional, senha do sistema de email
+#senha do sistema de email
 EMAIL_PASSWORD=minhasenha@123 
 # access ID da AWS
 AWS_ACCESS_KEY_ID=213921d... 
@@ -66,3 +66,9 @@ Recomendamos utilizar o nome `fiap-9soat-bucket` na criação do bucket. Caso ou
 #### RabbitMQ
 Por padrão, inicializamos as credenciais de inicialização do RabbitMQ (`guest`). Recomendamos que seja criado um novo usuario e senha após a subida do projeto, atráves da interface gráfica do RabbitMQ (`http://localhost:15672/`).  
 Após criação do usuario, lembre-se de atualizar as variaveis `RABBITMQ_USER` e `RABBITMQ_PASSWORD` corretamente.
+
+## Utilização
+Atenção: Necessário ter feito toda a configuração do passo [Configuracao](#configuração)!
+
+### Coleção Postman/Bruno
+A maneira recomendada de testar a API é baixar a coleção do Postman/UseBruno disponibilizada aqui.
