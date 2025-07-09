@@ -11,6 +11,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import orq.fiap.entity.Processamento;
+import orq.fiap.repository.ProcessamentoRepository;
 import orq.fiap.services.ProcessamentoService;
 
 @QuarkusTest
@@ -34,14 +36,14 @@ class ProcessamentoResourceTest {
     @TestSecurity(authorizationEnabled = false)
     void testaSucessoGetProcessamento() {
         String uuid = "123e4567-e89b-12d3-a456-426614174000";
-        when(processamentoService.createPresignedGetUrl(any())).thenReturn(uuid);
+        String url = "http://teste.com";
+        when(processamentoService.getPresignedUrl(uuid)).thenReturn(url);
 
         given()
                 .when()
                 .get("/processamento/url-video/" + uuid)
                 .then()
                 .statusCode(200)
-                .body(containsString(uuid));
-
+                .body(containsString(url));
     }
 }

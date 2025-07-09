@@ -20,6 +20,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
+import orq.fiap.entity.Processamento;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -96,9 +97,12 @@ public class ProcessamentoService {
         emitter.send(encoded);
     }
 
-    public String createPresignedGetUrl(String uuid) {
-        authService.validarUsuario(uuid);
+    public String getPresignedUrl(String uuid) {
+        Processamento processamento = authService.validarUsuario(uuid);
+        return processamento.getPresignedUrl();
+    }
 
+    public String createPresignedGetUrl(String uuid) {
         System.setProperty("aws.accessKeyId", acessKey);
         System.setProperty("aws.secretAccessKey", secretAcessKey);
         System.setProperty("aws.sessionToken", sessionToken);

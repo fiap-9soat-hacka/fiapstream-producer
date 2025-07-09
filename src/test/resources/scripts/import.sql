@@ -17,6 +17,7 @@ CREATE TABLE `HistoricoProcessamento` (
     `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `filename` varchar(255) NOT NULL,
     `userId` bigint NOT NULL,
+    `presignedUrl` varchar(2048) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `FK_HISTORICOPROCESSAMENTO_ON_USERID` (`userId`),
     CONSTRAINT `FK_HISTORICOPROCESSAMENTO_ON_USERID` FOREIGN KEY (`userId`) REFERENCES `Usuario` (`id`)
@@ -29,6 +30,7 @@ CREATE TABLE `Processamento` (
     `webhookUrl` varchar(255) DEFAULT NULL,
     `filename` varchar(255) NOT NULL,
     `userId` bigint NOT NULL,
+    `presignedUrl` varchar(2048) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `FK_PROCESSAMENTO_ON_USERID` (`userId`),
     CONSTRAINT `FK_PROCESSAMENTO_ON_USERID` FOREIGN KEY (`userId`) REFERENCES `Usuario` (`id`)

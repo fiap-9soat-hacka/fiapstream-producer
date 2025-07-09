@@ -40,11 +40,4 @@ public class AuthResource {
     public Response signIn(@Valid AuthSignInRequest signInRequest) {
         return Response.ok(authService.signIn(signInRequest.username(), signInRequest.password())).build();
     }
-
-    @Path("/me")
-    @GET
-    @RolesAllowed({ "user" })
-    public Response test(@Context SecurityContext securityContext) {
-        return Response.ok(securityContext).build();
-    }
 }

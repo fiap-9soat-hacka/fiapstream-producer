@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.junit.jupiter.api.Test;
 
@@ -57,8 +59,9 @@ public class AuthServiceTest {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         processamento.setUsuario(usuario);
+        var optionalProcessamento = Optional.of(processamento);
 
-        when(processamentoRepository.findById(anyString())).thenReturn(processamento);
+        when(processamentoRepository.findByIdOptional(anyString())).thenReturn(optionalProcessamento);
         when(jwt.getClaim("userId")).thenReturn("2");
 
         assertThrows(ForbiddenException.class, () -> authService.validarUsuario("teste"));
