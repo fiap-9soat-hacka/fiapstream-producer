@@ -65,7 +65,9 @@ Recomendamos utilizar o nome `fiap-9soat-bucket` na criação do bucket. Caso ou
 #### RabbitMQ
 
 Por padrão, inicializamos as credenciais de inicialização do RabbitMQ (`guest`). Recomendamos que seja criado um novo usuario e senha após a subida do projeto, atráves da interface gráfica do RabbitMQ (`http://localhost:15672/`).  
-Após criação do usuario, lembre-se de atualizar as variaveis `RABBITMQ_USER` e `RABBITMQ_PASSWORD` corretamente.
+Após criação do usuario, lembre-se de atualizar as variaveis `RABBITMQ_USER` e `RABBITMQ_PASSWORD` corretamente.  
+Caso o log da(s) API(s) esteja apresentando erros de conexão ou autenticação, pode ser que o usuario padrão (`guest`) esteja mal configurado.  
+Recomendamos criar um usuario novo com todas as permissões necessárias no dashboard do RabbitMQ.  
 
 ### Deploy
 
