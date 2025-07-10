@@ -113,3 +113,14 @@ Atenção: Necessário ter feito toda a configuração do passo [Configuracao](#
 A maneira recomendada de testar a API é baixar a coleção do Postman/UseBruno disponibilizada aqui.
 
 As operações na coleção estão ordernadas por número, explicando a ordem comum que as requisições devem seguir.
+
+![alt text](public/img/fiapstream-collection.png)
+
+Utilize o arquivo `fiapstream-bruno.json` caso esteja utilizando `UseBruno`, e o arquivo `fiapstream-postman.json` caso 
+esteja utilizando o `Postman`.
+
+### Swagger Docs
+Também é possível acessar toda a documentação da API através da interface do Swagger Docs, que fica disponível na url
+`https://localhost/q/docs` após a execução do deploy.  
+A desvantagem desse método é que não é possível explicitar a ordem dos endpoints.
+

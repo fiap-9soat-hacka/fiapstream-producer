@@ -1,0 +1,212 @@
+{
+  "info": {
+    "name": "fiap-9soat-hacka",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "bruno",
+      "event": []
+    },
+    {
+      "name": "fiapstream",
+      "item": [
+        {
+          "name": "1 - Create User",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": null,
+            "description": "Cria um usuario no banco de dados.",
+            "url": {
+              "raw": "{{API_URL}}/auth/sign-up",
+              "protocol": "",
+              "host": [
+                "{{API_URL}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"fiap-user-1\",\n  \"password\": \"fiap-user-1\",\n  \"email\": \"fiap-user-1@gmail.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "2 - Autenticar",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": null,
+            "description": "Autentica com uma credencial de usuario.\n!Modifique a variavel \"ACCESS_TOKEN\" com o valor retornado desse endpoint!",
+            "url": {
+              "raw": "{{API_URL}}/auth/sign-in",
+              "protocol": "",
+              "host": [
+                "{{API_URL}}"
+              ],
+              "path": [
+                "auth",
+                "sign-in"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"fiap-user-1\",\n  \"password\": \"fiap-user-1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "3 - Iniciar processamento",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": null,
+            "description": "Inicia uma requisição de processamento. Utilize o retorno dessa operação para consultar os próximos endpoints!",
+            "url": {
+              "raw": "{{API_URL}}/processamento",
+              "protocol": "",
+              "host": [
+                "{{API_URL}}"
+              ],
+              "path": [
+                "processamento"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "video",
+                  "value": [
+                    "C:\\Users\\F1923795\\Downloads\\5538262-hd_1920_1080_25fps.mp4"
+                  ],
+                  "disabled": false,
+                  "type": "default"
+                },
+                {
+                  "key": "webhookUrl",
+                  "value": "",
+                  "disabled": false,
+                  "type": "default"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "4 - Consultar estado",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": null,
+            "description": "",
+            "url": {
+              "raw": "{{API_URL}}/estado/5538262-hd_1920_1080_25fps.mp4-b02ad77b-c633-4f58-8fde-5268430deee9",
+              "protocol": "",
+              "host": [
+                "{{API_URL}}"
+              ],
+              "path": [
+                "estado",
+                "5538262-hd_1920_1080_25fps.mp4-b02ad77b-c633-4f58-8fde-5268430deee9"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "3.1 - Recuperar URL do video processado",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": null,
+            "description": "",
+            "url": {
+              "raw": "{{API_URL}}/processamento/url-video/5538262-hd_1920_1080_25fps.mp4-b02ad77b-c633-4f58-8fde-5268430deee9",
+              "protocol": "",
+              "host": [
+                "{{API_URL}}"
+              ],
+              "path": [
+                "processamento",
+                "url-video",
+                "5538262-hd_1920_1080_25fps.mp4-b02ad77b-c633-4f58-8fde-5268430deee9"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "4.1 - Consultar histórico de processamento",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": null,
+            "description": "Consulta todo o histórico de processamento relacionado a uma UUID de processamento.",
+            "url": {
+              "raw": "{{API_URL}}/estado/5538262-hd_1920_1080_25fps.mp4-b02ad77b-c633-4f58-8fde-5268430deee9/historico",
+              "protocol": "",
+              "host": [
+                "{{API_URL}}"
+              ],
+              "path": [
+                "estado",
+                "5538262-hd_1920_1080_25fps.mp4-b02ad77b-c633-4f58-8fde-5268430deee9",
+                "historico"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "API_URL",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

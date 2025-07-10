@@ -33,7 +33,7 @@ services:
     hostname: producer
     env_file:
       - .env
-    image: lamarcke/fiapstream-producer:0.0.6
+    image: lamarcke/fiapstream-producer:0.0.7
     restart: always
     environment:
       AWS_REGION: us-east-1
