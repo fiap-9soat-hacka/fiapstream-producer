@@ -11,12 +11,12 @@ e realizando o controle de estados e alarmes.
 
 ## Arquitetura orientada a eventos do projeto FiapStream
 
-![alt text](<FiapStream - FIGMA.png>)
+![alt text](<public/img/FiapStream%20-%20FIGMA.png>)
 https://www.figma.com/board/tl9T7OLsfZC7N6aapHnGb5/Projeto-Processador-Video-FIAP?node-id=6-7&t=rKJTJTmBopgJdaO7-1
 
 ## Arquitetura do Banco de Dados
 
-![alt text](fiapstream.png)
+![alt text](public/img/fiapstream.png)
 
 ## Configuração
 
@@ -48,7 +48,8 @@ RABBITMQ_PASSWORD=guest
 As credenciais da AWS podem ser obtidas atráves do arquivo `~/.aws/credentials`, caso você tenha o `AWS CLI` configurado.
 
 É importante que seja especificado o arquivo `docker-compose.prod.yml` na subida, já que essa versão sobe e expõe todos os serviços
-necessários. Esse deploy vai expor a aplicação principal na porta `:8080`.
+necessários. Esse deploy vai expor a aplicação principal na porta `:80`, utilizando Nginx.  
+Isso significa que em ambiente local a aplicação se encontra disponível na url `http://localhost`. 
 
 ### Configuração
 
@@ -64,7 +65,7 @@ Recomendamos utilizar o nome `fiap-9soat-bucket` na criação do bucket. Caso ou
 
 #### RabbitMQ
 
-Por padrão, inicializamos as credenciais de inicialização do RabbitMQ (`guest`). Recomendamos que seja criado um novo usuario e senha após a subida do projeto, atráves da interface gráfica do RabbitMQ (`http://localhost:15672/`).  
+Por padrão, inicializamos as credenciais de inicialização do RabbitMQ (`guest`). Recomendamos que seja criado um novo usuario e senha após a subida do projeto, atráves da interface gráfica do RabbitMQ (`http://localhost/rabbitmq`).  
 Após criação do usuario, lembre-se de atualizar as variaveis `RABBITMQ_USER` e `RABBITMQ_PASSWORD` corretamente.  
 Caso o log da(s) API(s) esteja apresentando erros de conexão ou autenticação, pode ser que o usuario padrão (`guest`) esteja mal configurado.  
 Recomendamos criar um usuario novo com todas as permissões necessárias no dashboard do RabbitMQ.  
@@ -77,8 +78,38 @@ Com a configuração feita, basta inicializar o deploy com o `docker compose`:
 docker compose -f docker-compose.prod.yml up -d
 ```
 
+### Produção, SSL e dominios
+
+#### Utilizando Docker Swarm
+Em ambientes produtivos, recomendamos configurar o modo [Docker Swarm](https://docs.docker.com/engine/swarm/) no servidor de aplicação.    
+O Docker Swarm aceita a mesma configuração que o Docker Compose, e permite o gerenciamento, controle de escalabilidade e monitoração de forma simplificada.  
+O Swarm é uma alternativa simplificada ao sistema do Kubernetes.
+
+Recomendamos utilizar uma solução para facilitar o gerenciamento do Docker Swarm, como o [Portainer](https://www.portainer.io/), 
+que possui um tier gratuito com 3 nodes (maquinas), ou com 5 nodes para projetos de código aberto.
+
+Após a configuração do Docker Swarm, basta executar o deploy do arquivo compose como uma Stack:
+```shell
+docker stack deploy --compose-file docker-compose.prod.yml fiapstream
+```
+
+#### Cloudflare como CDN gratuito
+Para expor a aplicação na internet, recomendamos o uso de um CDN como o [Cloudflare](https://cloudflare.com), que possui um 
+tier gratuito extremamente generoso.  
+É importante ressaltar que é necessário obter um dominio para expor a aplicação dessa forma. É incomum o uso de 
+IP direto com requisições HTTPS, então esse requisito é obrigatório.  
+Com o domínio em mãos, basta apontar o registro para o DNS da Cloudflare, e em seguida adicionar um registro do 
+tipo A apontando para o IP do servidor:  
+
+![alt text](public/img/fiapstream-cloudflare-record.png)
+
+Seguindo essas recomendações, você pode disponibilizar sua própria instância do `fiapstream` de forma segura e escalável 
+para todos na Internet!
+
 ## Utilização
 Atenção: Necessário ter feito toda a configuração do passo [Configuracao](#configuração)!
 
 ### Coleção Postman/Bruno
 A maneira recomendada de testar a API é baixar a coleção do Postman/UseBruno disponibilizada aqui.
+
+As operações na coleção estão ordernadas por número, explicando a ordem comum que as requisições devem seguir.

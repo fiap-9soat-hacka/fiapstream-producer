@@ -63,7 +63,7 @@ public class ProcessamentoService {
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    public void iniciarProcessamento(VideoData videoData)
+    public String iniciarProcessamento(VideoData videoData)
             throws IOException, IllegalAccessException, InvocationTargetException {
         if (videoData.getVideo() == null) {
             throw new BadRequestException("Video file is required and must exist");
@@ -95,10 +95,12 @@ public class ProcessamentoService {
         estadoProcessamentoService.criar(videoDataUUID);
 
         emitter.send(encoded);
+
+        return uuid;
     }
 
     public String getPresignedUrl(String uuid) {
-        Processamento processamento = authService.validarUsuario(uuid);
+        Processamento processamento = authService.validarPermissaoAcesso(uuid);
         return processamento.getPresignedUrl();
     }
 

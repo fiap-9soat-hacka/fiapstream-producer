@@ -6,13 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import orq.fiap.dto.MessageResponseData;
 import orq.fiap.dto.ResponseData;
 import orq.fiap.dto.VideoDataUUID;
@@ -22,11 +18,8 @@ import orq.fiap.entity.Usuario;
 import orq.fiap.enums.EstadoProcessamento;
 import orq.fiap.repository.HistoricoProcessamentoRepository;
 import orq.fiap.repository.ProcessamentoRepository;
-import orq.fiap.services.*;
 import orq.fiap.utils.StringUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @QuarkusTest
@@ -74,23 +67,23 @@ class EstadoProcessamentoServiceTest {
 
     @Test
     void testGetEstadoAtual() {
-        when(authService.validarUsuario("uuid-123")).thenReturn(mockProcessamento);
+        when(authService.validarPermissaoAcesso("uuid-123")).thenReturn(mockProcessamento);
 
         Processamento result = service.getEstadoAtual("uuid-123");
 
         assertEquals(mockProcessamento, result);
-        verify(authService).validarUsuario("uuid-123");
+        verify(authService).validarPermissaoAcesso("uuid-123");
     }
 
     @Test
     void testGetHistorico() {
-        when(authService.validarUsuario("uuid-123")).thenReturn(mockProcessamento);
+        when(authService.validarPermissaoAcesso("uuid-123")).thenReturn(mockProcessamento);
         when(historicoRepo.findAllById("uuid-123")).thenReturn(List.of(new HistoricoProcessamento()));
 
         List<HistoricoProcessamento> result = service.getHistorico("uuid-123");
 
         assertEquals(1, result.size());
-        verify(authService).validarUsuario("uuid-123");
+        verify(authService).validarPermissaoAcesso("uuid-123");
         verify(historicoRepo).findAllById("uuid-123");
     }
 
