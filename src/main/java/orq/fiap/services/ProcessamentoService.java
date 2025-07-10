@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.UUID;
 
+import jakarta.ws.rs.NotFoundException;
 import org.apache.tika.Tika;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -21,6 +22,7 @@ import jakarta.ws.rs.WebApplicationException;
 import orq.fiap.dto.VideoData;
 import orq.fiap.dto.VideoDataUUID;
 import orq.fiap.entity.Processamento;
+import orq.fiap.enums.EstadoProcessamento;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -101,6 +103,11 @@ public class ProcessamentoService {
 
     public String getPresignedUrl(String uuid) {
         Processamento processamento = authService.validarPermissaoAcesso(uuid);
+
+        if (processamento.getPresignedUrl() == null) {
+            throw new NotFoundException("A URL de acesso ao arquivo ainda não foi preenchida.");
+        }
+
         return processamento.getPresignedUrl();
     }
 
