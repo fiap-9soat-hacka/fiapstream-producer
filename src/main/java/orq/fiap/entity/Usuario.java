@@ -1,5 +1,6 @@
 package orq.fiap.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
@@ -20,8 +21,10 @@ public class Usuario {
     @Username
     private String username;
     @Password
+    @JsonIgnore
     private String password;
     @Column(unique = true)
+    @JsonIgnore
     private String email;
     @Roles
     private String role;

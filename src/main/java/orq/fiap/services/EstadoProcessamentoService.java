@@ -94,7 +94,7 @@ public class EstadoProcessamentoService {
         responseData.setFilename(processamento.getFilename());
         responseData.setEstado(EstadoProcessamento.PENDENTE);
 
-        if (!processamento.getWebhookUrl().isEmpty()) {
+        if (processamento.getWebhookUrl() != null && !processamento.getWebhookUrl().isEmpty()) {
             webhookService.sendData(processamento.getWebhookUrl(), responseData);
         }
     }

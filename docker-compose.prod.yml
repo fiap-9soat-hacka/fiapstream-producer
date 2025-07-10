@@ -33,9 +33,10 @@ services:
     hostname: producer
     env_file:
       - .env
-    image: lamarcke/fiapstream-producer
+    image: lamarcke/fiapstream-producer:0.0.6
     restart: always
     environment:
+      AWS_REGION: us-east-1
       RABBITMQ_HOST: rabbitmq
       DB_URL: "db:3306"
     depends_on:
@@ -48,9 +49,10 @@ services:
   processador:
     env_file:
       - .env
-    image: lamarcke/fiapstream-processador
+    image: lamarcke/fiapstream-processador:0.0.13
     restart: always
     environment:
+      AWS_REGION: us-east-1
       RABBITMQ_HOST: rabbitmq
     depends_on:
       - rabbitmq
