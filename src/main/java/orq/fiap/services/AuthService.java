@@ -2,7 +2,6 @@ package orq.fiap.services;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -14,7 +13,6 @@ import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
 import orq.fiap.dto.UserCreateRequest;
 import orq.fiap.entity.Processamento;
@@ -56,7 +54,12 @@ public class AuthService {
         throw new NotFoundException("Invalid username or password");
     }
 
-    public Processamento validarUsuario(String uuid) {
+    /**
+     * Verifica se o usuario tem permissão para acessar o processamento com a UUID especificada.
+     * @param uuid
+     * @return - o processamento caso a permissão exista
+     */
+    public Processamento validarPermissaoAcesso(String uuid) {
 
         Processamento processamento = processamentoRepository.findByIdOptional(uuid)
                 .orElseThrow(BadRequestException::new);

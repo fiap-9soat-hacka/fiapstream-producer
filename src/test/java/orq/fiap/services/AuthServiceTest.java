@@ -50,7 +50,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void testaForbiddenValidarUsuario() {
+    void testaForbiddenValidarPermissaoAcesso() {
         Processamento processamento = new Processamento();
         processamento.setUuid("teste");
         processamento.setEstado(EstadoProcessamento.CONCLUIDO);
@@ -64,7 +64,7 @@ public class AuthServiceTest {
         when(processamentoRepository.findByIdOptional(anyString())).thenReturn(optionalProcessamento);
         when(jwt.getClaim("userId")).thenReturn("2");
 
-        assertThrows(ForbiddenException.class, () -> authService.validarUsuario("teste"));
+        assertThrows(ForbiddenException.class, () -> authService.validarPermissaoAcesso("teste"));
     }
 
 }

@@ -7,12 +7,10 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.logging.Log;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -64,11 +62,12 @@ public class EstadoProcessamentoService {
     String websocketUri;
 
     public Processamento getEstadoAtual(String uuid) {
-        return authService.validarUsuario(uuid);
+
+        return authService.validarPermissaoAcesso(uuid);
     }
 
     public List<HistoricoProcessamento> getHistorico(String uuid) {
-        authService.validarUsuario(uuid);
+        authService.validarPermissaoAcesso(uuid);
 
         return this.historicoProcessamentoRepository.findAllById(uuid);
     }
