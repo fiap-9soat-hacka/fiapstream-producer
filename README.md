@@ -1,7 +1,7 @@
 # fiapstream-producer
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fiap-9soat-hacka_fiapstream-processador&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fiap-9soat-hacka_fiapstream-processador)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fiap-9soat-hacka_fiapstream-processador&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fiap-9soat-hacka_fiapstream-processador)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fiap-9soat-hacka_fiapstream-producer&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fiap-9soat-hacka_fiapstream-producer)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fiap-9soat-hacka_fiapstream-producer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fiap-9soat-hacka_fiapstream-producer)
 
 ## Objetivo
 
@@ -11,7 +11,7 @@ e realizando o controle de estados e alarmes.
 
 ## Arquitetura orientada a eventos do projeto FiapStream
 
-![alt text](<public/img/FiapStream%20-%20FIGMA.png>)
+![alt text](public/img/FiapStream%20-%20FIGMA.png)
 https://www.figma.com/board/tl9T7OLsfZC7N6aapHnGb5/Projeto-Processador-Video-FIAP?node-id=6-7&t=rKJTJTmBopgJdaO7-1
 
 ## Arquitetura do Banco de Dados
@@ -113,3 +113,14 @@ Atenção: Necessário ter feito toda a configuração do passo [Configuracao](#
 A maneira recomendada de testar a API é baixar a coleção do Postman/UseBruno disponibilizada aqui.
 
 As operações na coleção estão ordernadas por número, explicando a ordem comum que as requisições devem seguir.
+
+![alt text](public/img/fiapstream-collection.png)
+
+Utilize o arquivo `fiapstream-bruno.json` caso esteja utilizando `UseBruno`, e o arquivo `fiapstream-postman.json` caso 
+esteja utilizando o `Postman`.
+
+### Swagger Docs
+Também é possível acessar toda a documentação da API através da interface do Swagger Docs, que fica disponível na url
+`https://localhost/q/docs` após a execução do deploy.  
+A desvantagem desse método é que não é possível explicitar a ordem dos endpoints.
+
