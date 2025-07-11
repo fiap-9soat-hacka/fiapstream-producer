@@ -123,3 +123,11 @@ Também é possível acessar toda a documentação da API através da interface 
 `https://localhost/q/docs` após a execução do deploy.  
 A desvantagem desse método é que não é possível explicitar a ordem dos endpoints.
 
+### Tratamento de exceções
+No caso de erros durante o processamento de vídeo, um mensagem automatica é enviada ao email de cadastro do usuario, além de uma requisição para o endereço `webhookUrl` passado no momento da requisição inicial.  
+Para isso, é necessário que as variaveis `EMAIL_SENDER` e `EMAIL_PASSWORD` estejam configuradas corretamente, e que o email de cadastro do usuario seja realmente válido.
+
+### Websocket
+Após feito o deploy, é possível visualizar uma demonstração da funcionalidade extra de Websocket para escuta de eventos visitando a url `localhost/index.html`.  
+Na interface que aparece, basta digitar o `username` do responsável pela requisição e observar o streaming de eventos recebidos. A URL do `websocket` pode ser utilizada por uma API de terceiros para realizar tratamento extras com base nos estados
+do processamento.
