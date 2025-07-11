@@ -1,7 +1,6 @@
 # fiapstream-producer
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fiap-9soat-hacka_fiapstream-producer&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fiap-9soat-hacka_fiapstream-producer)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fiap-9soat-hacka_fiapstream-producer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fiap-9soat-hacka_fiapstream-producer)
+[![Coverage](.github/badges/jacoco.svg)]()
 
 ## Objetivo
 
