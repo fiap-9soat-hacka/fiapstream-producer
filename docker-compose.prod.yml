@@ -36,6 +36,7 @@ services:
     image: lamarcke/fiapstream-producer:0.0.7
     restart: always
     environment:
+      QUARKUS_HTTP_LIMITS_MAX_BODY_SIZE: 1000M
       AWS_REGION: us-east-1
       RABBITMQ_HOST: rabbitmq
       DB_URL: "db:3306"
